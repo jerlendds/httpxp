@@ -3,49 +3,49 @@
 ## Helper Functions
 
 !!! note
-    Only use these functions if you're testing HTTPX in a console
+    Only use these functions if you're testing HTTPXP in a console
     or making a small number of requests. Using a `Client` will
     enable HTTP/2 and connection pooling for more efficient and
     long-lived connections.
 
-::: httpx.request
+::: httpxp.request
     :docstring:
 
-::: httpx.get
+::: httpxp.get
     :docstring:
 
-::: httpx.options
+::: httpxp.options
     :docstring:
 
-::: httpx.head
+::: httpxp.head
     :docstring:
 
-::: httpx.post
+::: httpxp.post
     :docstring:
 
-::: httpx.put
+::: httpxp.put
     :docstring:
 
-::: httpx.patch
+::: httpxp.patch
     :docstring:
 
-::: httpx.delete
+::: httpxp.delete
     :docstring:
 
-::: httpx.stream
+::: httpxp.stream
     :docstring:
 
 ## `Client`
 
-::: httpx.Client
+::: httpxp.Client
     :docstring:
-    :members: headers cookies params auth request get head options post put patch delete stream build_request send close
+    :members: headers cookies params auth request get head options post put patch delete stream build_request send websocket close
 
 ## `AsyncClient`
 
-::: httpx.AsyncClient
+::: httpxp.AsyncClient
     :docstring:
-    :members: headers cookies params auth request get head options post put patch delete stream build_request send aclose
+    :members: headers cookies params auth request get head options post put patch delete stream build_request send websocket aclose
 
 
 ## `Response`
@@ -93,7 +93,7 @@
 what gets sent over the wire.*
 
 ```pycon
->>> request = httpx.Request("GET", "https://example.org", headers={'host': 'example.org'})
+>>> request = httpxp.Request("GET", "https://example.org", headers={'host': 'example.org'})
 >>> response = client.send(request)
 ```
 
@@ -174,3 +174,22 @@ what gets sent over the wire.*
 * `.auth` - **tuple[str, str]**
 * `.headers` - **Headers**
 * `.ssl_context` - **SSLContext**
+
+## Privacy configuration and WebSockets
+
+`Client`, `AsyncClient`, `HTTPTransport`, `AsyncHTTPTransport`, module request
+helpers, and the top-level `websocket` helper accept `privacy_options`.
+Per-request settings use `extensions={"private": {...}}`. See the
+[privacy guide](advanced/wreq.md) and [option reference](advanced/privacy-options.md).
+
+::: httpxp.websocket
+    :docstring:
+
+::: httpxp.WebSocketMessage
+    :docstring:
+
+::: httpxp.WebSocket
+    :docstring:
+
+::: httpxp.AsyncWebSocket
+    :docstring:

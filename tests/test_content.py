@@ -3,7 +3,7 @@ import typing
 
 import pytest
 
-import httpx
+import httpxp
 
 method = "POST"
 url = "https://www.example.com"
@@ -11,9 +11,9 @@ url = "https://www.example.com"
 
 @pytest.mark.anyio
 async def test_empty_content():
-    request = httpx.Request(method, url)
-    assert isinstance(request.stream, httpx.SyncByteStream)
-    assert isinstance(request.stream, httpx.AsyncByteStream)
+    request = httpxp.Request(method, url)
+    assert isinstance(request.stream, httpxp.SyncByteStream)
+    assert isinstance(request.stream, httpxp.AsyncByteStream)
 
     sync_content = b"".join(list(request.stream))
     async_content = b"".join([part async for part in request.stream])
@@ -25,7 +25,7 @@ async def test_empty_content():
 
 @pytest.mark.anyio
 async def test_bytes_content():
-    request = httpx.Request(method, url, content=b"Hello, world!")
+    request = httpxp.Request(method, url, content=b"Hello, world!")
     assert isinstance(request.stream, typing.Iterable)
     assert isinstance(request.stream, typing.AsyncIterable)
 
@@ -38,7 +38,7 @@ async def test_bytes_content():
 
     # Support 'data' for compat with requests.
     with pytest.warns(DeprecationWarning):
-        request = httpx.Request(method, url, data=b"Hello, world!")  # type: ignore
+        request = httpxp.Request(method, url, data=b"Hello, world!")  # type: ignore
     assert isinstance(request.stream, typing.Iterable)
     assert isinstance(request.stream, typing.AsyncIterable)
 
@@ -52,7 +52,7 @@ async def test_bytes_content():
 
 @pytest.mark.anyio
 async def test_bytesio_content():
-    request = httpx.Request(method, url, content=io.BytesIO(b"Hello, world!"))
+    request = httpxp.Request(method, url, content=io.BytesIO(b"Hello, world!"))
     assert isinstance(request.stream, typing.Iterable)
     assert not isinstance(request.stream, typing.AsyncIterable)
 
@@ -77,7 +77,7 @@ async def test_async_bytesio_content():
         async def __aiter__(self):
             yield self._content  # pragma: no cover
 
-    request = httpx.Request(method, url, content=AsyncBytesIO(b"Hello, world!"))
+    request = httpxp.Request(method, url, content=AsyncBytesIO(b"Hello, world!"))
     assert not isinstance(request.stream, typing.Iterable)
     assert isinstance(request.stream, typing.AsyncIterable)
 
@@ -96,7 +96,7 @@ async def test_iterator_content():
         yield b"Hello, "
         yield b"world!"
 
-    request = httpx.Request(method, url, content=hello_world())
+    request = httpxp.Request(method, url, content=hello_world())
     assert isinstance(request.stream, typing.Iterable)
     assert not isinstance(request.stream, typing.AsyncIterable)
 
@@ -108,12 +108,12 @@ async def test_iterator_content():
     }
     assert content == b"Hello, world!"
 
-    with pytest.raises(httpx.StreamConsumed):
+    with pytest.raises(httpxp.StreamConsumed):
         list(request.stream)
 
     # Support 'data' for compat with requests.
     with pytest.warns(DeprecationWarning):
-        request = httpx.Request(method, url, data=hello_world())  # type: ignore
+        request = httpxp.Request(method, url, data=hello_world())  # type: ignore
     assert isinstance(request.stream, typing.Iterable)
     assert not isinstance(request.stream, typing.AsyncIterable)
 
@@ -132,7 +132,7 @@ async def test_aiterator_content():
         yield b"Hello, "
         yield b"world!"
 
-    request = httpx.Request(method, url, content=hello_world())
+    request = httpxp.Request(method, url, content=hello_world())
     assert not isinstance(request.stream, typing.Iterable)
     assert isinstance(request.stream, typing.AsyncIterable)
 
@@ -144,12 +144,12 @@ async def test_aiterator_content():
     }
     assert content == b"Hello, world!"
 
-    with pytest.raises(httpx.StreamConsumed):
+    with pytest.raises(httpxp.StreamConsumed):
         [part async for part in request.stream]
 
     # Support 'data' for compat with requests.
     with pytest.warns(DeprecationWarning):
-        request = httpx.Request(method, url, data=hello_world())  # type: ignore
+        request = httpxp.Request(method, url, data=hello_world())  # type: ignore
     assert not isinstance(request.stream, typing.Iterable)
     assert isinstance(request.stream, typing.AsyncIterable)
 
@@ -164,7 +164,7 @@ async def test_aiterator_content():
 
 @pytest.mark.anyio
 async def test_json_content():
-    request = httpx.Request(method, url, json={"Hello": "world!"})
+    request = httpxp.Request(method, url, json={"Hello": "world!"})
     assert isinstance(request.stream, typing.Iterable)
     assert isinstance(request.stream, typing.AsyncIterable)
 
@@ -182,7 +182,7 @@ async def test_json_content():
 
 @pytest.mark.anyio
 async def test_urlencoded_content():
-    request = httpx.Request(method, url, data={"Hello": "world!"})
+    request = httpxp.Request(method, url, data={"Hello": "world!"})
     assert isinstance(request.stream, typing.Iterable)
     assert isinstance(request.stream, typing.AsyncIterable)
 
@@ -200,7 +200,7 @@ async def test_urlencoded_content():
 
 @pytest.mark.anyio
 async def test_urlencoded_boolean():
-    request = httpx.Request(method, url, data={"example": True})
+    request = httpxp.Request(method, url, data={"example": True})
     assert isinstance(request.stream, typing.Iterable)
     assert isinstance(request.stream, typing.AsyncIterable)
 
@@ -218,7 +218,7 @@ async def test_urlencoded_boolean():
 
 @pytest.mark.anyio
 async def test_urlencoded_none():
-    request = httpx.Request(method, url, data={"example": None})
+    request = httpxp.Request(method, url, data={"example": None})
     assert isinstance(request.stream, typing.Iterable)
     assert isinstance(request.stream, typing.AsyncIterable)
 
@@ -236,7 +236,7 @@ async def test_urlencoded_none():
 
 @pytest.mark.anyio
 async def test_urlencoded_list():
-    request = httpx.Request(method, url, data={"example": ["a", 1, True]})
+    request = httpxp.Request(method, url, data={"example": ["a", 1, True]})
     assert isinstance(request.stream, typing.Iterable)
     assert isinstance(request.stream, typing.AsyncIterable)
 
@@ -256,7 +256,7 @@ async def test_urlencoded_list():
 async def test_multipart_files_content():
     files = {"file": io.BytesIO(b"<file content>")}
     headers = {"Content-Type": "multipart/form-data; boundary=+++"}
-    request = httpx.Request(
+    request = httpxp.Request(
         method,
         url,
         files=files,
@@ -300,7 +300,7 @@ async def test_multipart_data_and_files_content():
     data = {"message": "Hello, world!"}
     files = {"file": io.BytesIO(b"<file content>")}
     headers = {"Content-Type": "multipart/form-data; boundary=+++"}
-    request = httpx.Request(method, url, data=data, files=files, headers=headers)
+    request = httpxp.Request(method, url, data=data, files=files, headers=headers)
     assert isinstance(request.stream, typing.Iterable)
     assert isinstance(request.stream, typing.AsyncIterable)
 
@@ -344,7 +344,7 @@ async def test_multipart_data_and_files_content():
 
 @pytest.mark.anyio
 async def test_empty_request():
-    request = httpx.Request(method, url, data={}, files={})
+    request = httpxp.Request(method, url, data={}, files={})
     assert isinstance(request.stream, typing.Iterable)
     assert isinstance(request.stream, typing.AsyncIterable)
 
@@ -358,10 +358,10 @@ async def test_empty_request():
 
 def test_invalid_argument():
     with pytest.raises(TypeError):
-        httpx.Request(method, url, content=123)  # type: ignore
+        httpxp.Request(method, url, content=123)  # type: ignore
 
     with pytest.raises(TypeError):
-        httpx.Request(method, url, content={"a": "b"})  # type: ignore
+        httpxp.Request(method, url, content={"a": "b"})  # type: ignore
 
 
 @pytest.mark.anyio
@@ -371,7 +371,7 @@ async def test_multipart_multiple_files_single_input_content():
         ("file", io.BytesIO(b"<file content 2>")),
     ]
     headers = {"Content-Type": "multipart/form-data; boundary=+++"}
-    request = httpx.Request(method, url, files=files, headers=headers)
+    request = httpxp.Request(method, url, files=files, headers=headers)
     assert isinstance(request.stream, typing.Iterable)
     assert isinstance(request.stream, typing.AsyncIterable)
 
@@ -417,7 +417,7 @@ async def test_multipart_multiple_files_single_input_content():
 
 @pytest.mark.anyio
 async def test_response_empty_content():
-    response = httpx.Response(200)
+    response = httpxp.Response(200)
     assert isinstance(response.stream, typing.Iterable)
     assert isinstance(response.stream, typing.AsyncIterable)
 
@@ -431,7 +431,7 @@ async def test_response_empty_content():
 
 @pytest.mark.anyio
 async def test_response_bytes_content():
-    response = httpx.Response(200, content=b"Hello, world!")
+    response = httpxp.Response(200, content=b"Hello, world!")
     assert isinstance(response.stream, typing.Iterable)
     assert isinstance(response.stream, typing.AsyncIterable)
 
@@ -449,7 +449,7 @@ async def test_response_iterator_content():
         yield b"Hello, "
         yield b"world!"
 
-    response = httpx.Response(200, content=hello_world())
+    response = httpxp.Response(200, content=hello_world())
     assert isinstance(response.stream, typing.Iterable)
     assert not isinstance(response.stream, typing.AsyncIterable)
 
@@ -458,7 +458,7 @@ async def test_response_iterator_content():
     assert response.headers == {"Transfer-Encoding": "chunked"}
     assert content == b"Hello, world!"
 
-    with pytest.raises(httpx.StreamConsumed):
+    with pytest.raises(httpxp.StreamConsumed):
         list(response.stream)
 
 
@@ -468,7 +468,7 @@ async def test_response_aiterator_content():
         yield b"Hello, "
         yield b"world!"
 
-    response = httpx.Response(200, content=hello_world())
+    response = httpxp.Response(200, content=hello_world())
     assert not isinstance(response.stream, typing.Iterable)
     assert isinstance(response.stream, typing.AsyncIterable)
 
@@ -477,18 +477,18 @@ async def test_response_aiterator_content():
     assert response.headers == {"Transfer-Encoding": "chunked"}
     assert content == b"Hello, world!"
 
-    with pytest.raises(httpx.StreamConsumed):
+    with pytest.raises(httpxp.StreamConsumed):
         [part async for part in response.stream]
 
 
 def test_response_invalid_argument():
     with pytest.raises(TypeError):
-        httpx.Response(200, content=123)  # type: ignore
+        httpxp.Response(200, content=123)  # type: ignore
 
 
 def test_ensure_ascii_false_with_french_characters():
     data = {"greeting": "Bonjour, ça va ?"}
-    response = httpx.Response(200, json=data)
+    response = httpxp.Response(200, json=data)
     assert "ça va" in response.text, (
         "ensure_ascii=False should preserve French accented characters"
     )
@@ -497,7 +497,7 @@ def test_ensure_ascii_false_with_french_characters():
 
 def test_separators_for_compact_json():
     data = {"clé": "valeur", "liste": [1, 2, 3]}
-    response = httpx.Response(200, json=data)
+    response = httpxp.Response(200, json=data)
     assert response.text == '{"clé":"valeur","liste":[1,2,3]}', (
         "separators=(',', ':') should produce a compact representation"
     )
@@ -511,8 +511,8 @@ def test_allow_nan_false():
     with pytest.raises(
         ValueError, match="Out of range float values are not JSON compliant"
     ):
-        httpx.Response(200, json=data_with_nan)
+        httpxp.Response(200, json=data_with_nan)
     with pytest.raises(
         ValueError, match="Out of range float values are not JSON compliant"
     ):
-        httpx.Response(200, json=data_with_inf)
+        httpxp.Response(200, json=data_with_inf)

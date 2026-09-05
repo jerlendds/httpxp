@@ -1,5 +1,7 @@
 # Third Party Packages
 
+The following catalog describes the upstream HTTPX ecosystem. Compatibility with httpxp has not been verified.
+
 As HTTPX usage grows, there is an expanding community of developers building tools and libraries that integrate with HTTPX, or depend on HTTPX. Here are some of them.
 
 <!-- NOTE: Entries are alphabetised. -->

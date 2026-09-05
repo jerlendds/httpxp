@@ -1,20 +1,20 @@
 # Contributing
 
-Thank you for being interested in contributing to HTTPX.
+Thank you for being interested in contributing to HTTPXP.
 There are many ways you can contribute to the project:
 
-- Try HTTPX and [report bugs/issues you find](https://github.com/encode/httpx/issues/new)
-- [Implement new features](https://github.com/encode/httpx/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
-- [Review Pull Requests of others](https://github.com/encode/httpx/pulls)
+- Try HTTPXP and [report bugs/issues you find](https://github.com/jerlendds/httpxp/issues/new)
+- [Implement new features](https://github.com/jerlendds/httpxp/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+- [Review Pull Requests of others](https://github.com/jerlendds/httpxp/pulls)
 - Write documentation
 - Participate in discussions
 
 ## Reporting Bugs or Other Issues
 
-Found something that HTTPX should support?
+Found something that HTTPXP should support?
 Stumbled upon some unexpected behaviour?
 
-Contributions should generally start out with [a discussion](https://github.com/encode/httpx/discussions).
+Contributions should generally start out with [a discussion](https://github.com/jerlendds/httpxp/discussions).
 Possible bugs may be raised as a "Potential Issue" discussion, feature requests may
 be raised as an "Ideas" discussion. We can then determine if the discussion needs
 to be escalated into an "Issue" or not, or if we'd consider a pull request.
@@ -39,20 +39,20 @@ Some possibly useful tips for narrowing down potential issues...
 
 ## Development
 
-To start developing HTTPX create a **fork** of the
-[HTTPX repository](https://github.com/encode/httpx) on GitHub.
+To start developing HTTPXP create a **fork** of the
+[HTTPXP repository](https://github.com/jerlendds/httpxp) on GitHub.
 
 Then clone your fork with the following command replacing `YOUR-USERNAME` with
 your GitHub username:
 
 ```shell
-$ git clone https://github.com/YOUR-USERNAME/httpx
+$ git clone https://github.com/YOUR-USERNAME/httpxp
 ```
 
 You can now install the project and its dependencies using:
 
 ```shell
-$ cd httpx
+$ cd httpxp
 $ scripts/install
 ```
 
@@ -105,7 +105,7 @@ Once you've submitted your pull request, the test suite will automatically run, 
 If the test suite fails, you'll want to click through to the "Details" link, and try to identify why the test suite failed.
 
 <p align="center" style="margin: 0 0 10px">
-  <img src="https://raw.githubusercontent.com/encode/httpx/master/docs/img/gh-actions-fail.png" alt='Failing PR commit status'>
+  <img src="https://raw.githubusercontent.com/jerlendds/httpxp/master/docs/img/gh-actions-fail.png" alt='Failing PR commit status'>
 </p>
 
 Here are some common ways the test suite can fail:
@@ -113,7 +113,7 @@ Here are some common ways the test suite can fail:
 ### Check Job Failed
 
 <p align="center" style="margin: 0 0 10px">
-  <img src="https://raw.githubusercontent.com/encode/httpx/master/docs/img/gh-actions-fail-check.png" alt='Failing GitHub action lint job'>
+  <img src="https://raw.githubusercontent.com/jerlendds/httpxp/master/docs/img/gh-actions-fail-check.png" alt='Failing GitHub action lint job'>
 </p>
 
 This job failing means there is either a code formatting issue or type-annotation issue.
@@ -134,7 +134,7 @@ a variety of reasons like invalid markdown or missing configuration within `mkdo
 ### Python 3.X Job Failed
 
 <p align="center" style="margin: 0 0 10px">
-  <img src="https://raw.githubusercontent.com/encode/httpx/master/docs/img/gh-actions-fail-test.png" alt='Failing GitHub action test job'>
+  <img src="https://raw.githubusercontent.com/jerlendds/httpxp/master/docs/img/gh-actions-fail-test.png" alt='Failing GitHub action test job'>
 </p>
 
 This job failing means the unit tests failed or not all code paths are covered by unit tests.
@@ -150,13 +150,13 @@ message under the coverage report:
 
 ## Releasing
 
-*This section is targeted at HTTPX maintainers.*
+*This section is targeted at HTTPXP maintainers.*
 
 Before releasing a new version, create a pull request that includes:
 
 - **An update to the changelog**:
     - We follow the format from [keepachangelog](https://keepachangelog.com/en/1.0.0/).
-    - [Compare](https://github.com/encode/httpx/compare/) `master` with the tag of the latest release, and list all entries that are of interest to our users:
+    - [Compare](https://github.com/jerlendds/httpxp/compare/) `master` with the tag of the latest release, and list all entries that are of interest to our users:
         - Things that **must** go in the changelog: added, changed, deprecated or removed features, and bug fixes.
         - Things that **should not** go in the changelog: changes to documentation, tests or tooling.
         - Try sorting entries in descending order of impact / importance.
@@ -166,7 +166,7 @@ Before releasing a new version, create a pull request that includes:
 For an example, see [#1006](https://github.com/encode/httpx/pull/1006).
 
 Once the release PR is merged, create a
-[new release](https://github.com/encode/httpx/releases/new) including:
+[new release](https://github.com/jerlendds/httpxp/releases/new) including:
 
 - Tag version like `0.13.3`.
 - Release title `Version 0.13.3`
@@ -203,18 +203,18 @@ certificate so we need to concatenate them:
 UI options.
 
 At this point the server is ready to start serving requests, you'll need to
-configure HTTPX as described in the
-[proxy section](https://www.python-httpx.org/advanced/#http-proxying) and
-the [SSL certificates section](https://www.python-httpx.org/advanced/#ssl-certificates),
+configure HTTPXP as described in the
+[proxy section](https://github.com/jerlendds/httpxp/blob/master/docs/advanced.md#http-proxying) and
+the [SSL certificates section](https://github.com/jerlendds/httpxp/blob/master/docs/advanced.md#ssl-certificates),
 this is where our previously generated `client.pem` comes in:
 
 ```
-import httpx
+import httpxp
 
-ssl_context = httpx.SSLContext()
+ssl_context = httpxp.SSLContext()
 ssl_context.load_verify_locations("/path/to/client.pem")
 
-with httpx.Client(proxy="http://127.0.0.1:8080/", ssl_context=ssl_context) as client:
+with httpxp.Client(proxy="http://127.0.0.1:8080/", ssl_context=ssl_context) as client:
     response = client.get("https://example.org")
     print(response.status_code)  # should print 200
 ```

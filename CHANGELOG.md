@@ -43,7 +43,7 @@ Our revised [SSL documentation](docs/advanced/ssl.md) covers how to implement th
 * Review URL percent escape sets, based on WHATWG spec. (#3371, #3373)
 * Ensure `certifi` and `httpcore` are only imported if required. (#3377)
 * Treat `socks5h` as a valid proxy scheme. (#3178)
-* Cleanup `Request()` method signature in line with `client.request()` and `httpx.request()`. (#3378)
+* Cleanup `Request()` method signature in line with `client.request()` and `httpxp.request()`. (#3378)
 * Bugfix: When passing `params={}`, always strictly update rather than merge with an existing querystring. (#3364)
 
 ## 0.27.2 (27th August, 2024)
@@ -56,7 +56,7 @@ Our revised [SSL documentation](docs/advanced/ssl.md) covers how to implement th
 
 ### Added
 
-* Support for `zstd` content decoding using the python `zstandard` package is added. Installable using `httpx[zstd]`. (#3139)
+* Support for `zstd` content decoding using the python `zstandard` package is added. Installable using `httpxp[zstd]`. (#3139)
 
 ### Fixed
 
@@ -67,7 +67,7 @@ Our revised [SSL documentation](docs/advanced/ssl.md) covers how to implement th
 
 ### Deprecated
 
-* The `app=...` shortcut has been deprecated. Use the explicit style of `transport=httpx.WSGITransport()` or `transport=httpx.ASGITransport()` instead.
+* The `app=...` shortcut has been deprecated. Use the explicit style of `transport=httpxp.WSGITransport()` or `transport=httpxp.ASGITransport()` instead.
 
 ### Fixed
 
@@ -119,8 +119,8 @@ Our revised [SSL documentation](docs/advanced/ssl.md) covers how to implement th
 
 * Support HTTPS proxies. (#2845)
 * Change the type of `Extensions` from `Mapping[Str, Any]` to `MutableMapping[Str, Any]`. (#2803)
-* Add `socket_options` argument to `httpx.HTTPTransport` and `httpx.AsyncHTTPTransport` classes. (#2716)
-* The `Response.raise_for_status()` method now returns the response instance. For example: `data = httpx.get('...').raise_for_status().json()`. (#2776)
+* Add `socket_options` argument to `httpxp.HTTPTransport` and `httpxp.AsyncHTTPTransport` classes. (#2716)
+* The `Response.raise_for_status()` method now returns the response instance. For example: `data = httpxp.get('...').raise_for_status().json()`. (#2776)
 
 ### Fixed
 
@@ -148,10 +148,10 @@ Our revised [SSL documentation](docs/advanced/ssl.md) covers how to implement th
 
 ### Changed
 
-* The logging behaviour has been changed to be more in-line with other standard Python logging usages. We no longer have a custom `TRACE` log level, and we no longer use the `HTTPX_LOG_LEVEL` environment variable to auto-configure logging. We now have a significant amount of `DEBUG` logging available at the network level. Full documentation is available at https://www.python-httpx.org/logging/ (#2547, encode/httpcore#648)
+* The logging behaviour has been changed to be more in-line with other standard Python logging usages. We no longer have a custom `TRACE` log level, and we no longer use the `HTTPXP_LOG_LEVEL` environment variable to auto-configure logging. We now have a significant amount of `DEBUG` logging available at the network level. Full documentation is available at https://www.python-httpx.org/logging/ (#2547, encode/httpcore#648)
 * The `Response.iter_lines()` method now matches the stdlib behaviour and does not include the newline characters. It also resolves a performance issue. (#2423)
 * Query parameter encoding switches from using + for spaces and %2F for forward slash, to instead using %20 for spaces and treating forward slash as a safe, unescaped character. This differs from `requests`, but is in line with browser behavior in Chrome, Safari, and Firefox. Both options are RFC valid. (#2543)
-* NetRC authentication is no longer automatically handled, but is instead supported by an explicit `httpx.NetRCAuth()` authentication class. See the documentation at https://www.python-httpx.org/advanced/authentication/#netrc-authentication (#2525)
+* NetRC authentication is no longer automatically handled, but is instead supported by an explicit `httpxp.NetRCAuth()` authentication class. See the documentation at https://www.python-httpx.org/advanced/authentication/#netrc-authentication (#2525)
 
 ### Removed
 
@@ -255,7 +255,7 @@ See the "Removed" section of these release notes for details.
 The 0.21.0 release integrates against a newly redesigned `httpcore` backend.
 
 Both packages ought to automatically update to the required versions, but if you are
-seeing any issues, you should ensure that you have `httpx==0.21.*` and `httpcore==0.14.*` installed.
+seeing any issues, you should ensure that you have `httpxp==0.21.*` and `httpcore==0.14.*` installed.
 
 ### Added
 
@@ -325,7 +325,7 @@ finally:
 
 ### Added
 
-* Added the `httpx` command-line client.
+* Added the `httpxp` command-line client.
 * Response instances now include `.is_informational`, `.is_success`, `.is_redirect`, `.is_client_error`, and `.is_server_error`
   properties for checking 1xx, 2xx, 3xx, 4xx, and 5xx response types. Note that the behaviour of `.is_redirect` is slightly different in that it now returns True for all 3xx responses, in order to allow for a consistent set of properties onto the different HTTP status code types. The `response.has_redirect_location` location may be used to determine responses with properly formed URL redirects.
 
@@ -347,15 +347,15 @@ finally:
 * Event hooks are now also called for any additional redirect or auth requests/responses. (Pull #1806)
 * Strictly enforce that upload files must be opened in binary mode. (Pull #1736)
 * Strictly enforce that client instances can only be opened and closed once, and cannot be re-opened. (Pull #1800)
-* Drop `mode` argument from `httpx.Proxy(..., mode=...)`. (Pull #1795)
+* Drop `mode` argument from `httpxp.Proxy(..., mode=...)`. (Pull #1795)
 
 ## 0.18.2 (17th June, 2021)
 
 ### Added
 
 * Support for Python 3.10. (Pull #1687)
-* Expose `httpx.USE_CLIENT_DEFAULT`, used as the default to `auth` and `timeout` parameters in request methods. (Pull #1634)
-* Support [HTTP/2 "prior knowledge"](https://python-hyper.org/projects/hyper-h2/en/v2.3.1/negotiating-http2.html#prior-knowledge), using `httpx.Client(http1=False, http2=True)`. (Pull #1624)
+* Expose `httpxp.USE_CLIENT_DEFAULT`, used as the default to `auth` and `timeout` parameters in request methods. (Pull #1634)
+* Support [HTTP/2 "prior knowledge"](https://python-hyper.org/projects/hyper-h2/en/v2.3.1/negotiating-http2.html#prior-knowledge), using `httpxp.Client(http1=False, http2=True)`. (Pull #1624)
 
 ### Fixed
 
@@ -371,43 +371,43 @@ finally:
 
 ### Fixed
 
-* Pass through `timeout=...` in top-level httpx.stream() function. (Pull #1613)
-* Map httpcore transport close exceptions to httpx exceptions. (Pull #1606)
+* Pass through `timeout=...` in top-level httpxp.stream() function. (Pull #1613)
+* Map httpcore transport close exceptions to httpxp exceptions. (Pull #1606)
 
 ## 0.18.0 (27th April, 2021)
 
-The 0.18.x release series formalises our low-level Transport API, introducing the base classes `httpx.BaseTransport` and `httpx.AsyncBaseTransport`.
+The 0.18.x release series formalises our low-level Transport API, introducing the base classes `httpxp.BaseTransport` and `httpxp.AsyncBaseTransport`.
 
-See the "[Custom transports](https://www.python-httpx.org/advanced/transports/#custom-transports)" documentation and the [`httpx.BaseTransport.handle_request()`](https://github.com/encode/httpx/blob/397aad98fdc8b7580a5fc3e88f1578b4302c6382/httpx/_transports/base.py#L77-L147) docstring for more complete details on implementing custom transports.
+See the "[Custom transports](https://www.python-httpx.org/advanced/transports/#custom-transports)" documentation and the [`httpxp.BaseTransport.handle_request()`](https://github.com/encode/httpx/blob/397aad98fdc8b7580a5fc3e88f1578b4302c6382/httpx/_transports/base.py#L77-L147) docstring for more complete details on implementing custom transports.
 
 Pull request #1522 includes a checklist of differences from the previous `httpcore` transport API, for developers implementing custom transports.
 
 The following API changes have been issuing deprecation warnings since 0.17.0 onwards, and are now fully deprecated...
 
-* You should now use httpx.codes consistently instead of httpx.StatusCodes.
+* You should now use httpxp.codes consistently instead of httpxp.StatusCodes.
 * Use limits=... instead of pool_limits=....
 * Use proxies={"http://": ...} instead of proxies={"http": ...} for scheme-specific mounting.
 
 ### Changed
 
-* Transport instances now inherit from `httpx.BaseTransport` or `httpx.AsyncBaseTransport`,
+* Transport instances now inherit from `httpxp.BaseTransport` or `httpxp.AsyncBaseTransport`,
   and should implement either the `handle_request` method or `handle_async_request` method. (Pull #1522, #1550)
 * The `response.ext` property and `Response(ext=...)` argument are now named `extensions`. (Pull #1522)
 * The recommendation to not use `data=<bytes|str|bytes (a)iterator>` in favour of `content=<bytes|str|bytes (a)iterator>` has now been escalated to a deprecation warning. (Pull #1573)
 * Drop `Response(on_close=...)` from API, since it was a bit of leaking implementation detail. (Pull #1572)
 * When using a client instance, cookies should always be set on the client, rather than on a per-request basis. We prefer enforcing a stricter API here because it provides clearer expectations around cookie persistence, particularly when redirects occur. (Pull #1574)
-* The runtime exception `httpx.ResponseClosed` is now named `httpx.StreamClosed`. (#1584)
-* The `httpx.QueryParams` model now presents an immutable interface. There is a discussion on [the design and motivation here](https://github.com/encode/httpx/discussions/1599). Use `client.params = client.params.merge(...)` instead of `client.params.update(...)`. The basic query manipulation methods are `query.set(...)`, `query.add(...)`, and `query.remove()`. (#1600)
+* The runtime exception `httpxp.ResponseClosed` is now named `httpxp.StreamClosed`. (#1584)
+* The `httpxp.QueryParams` model now presents an immutable interface. There is a discussion on [the design and motivation here](https://github.com/encode/httpx/discussions/1599). Use `client.params = client.params.merge(...)` instead of `client.params.update(...)`. The basic query manipulation methods are `query.set(...)`, `query.add(...)`, and `query.remove()`. (#1600)
 
 ### Added
 
 * The `Request` and `Response` classes can now be serialized using pickle. (#1579)
 * Handle `data={"key": [None|int|float|bool]}` cases. (Pull #1539)
-* Support `httpx.URL(**kwargs)`, for example `httpx.URL(scheme="https", host="www.example.com", path="/')`, or `httpx.URL("https://www.example.com/", username="tom@gmail.com", password="123 456")`. (Pull #1601)
+* Support `httpxp.URL(**kwargs)`, for example `httpxp.URL(scheme="https", host="www.example.com", path="/')`, or `httpxp.URL("https://www.example.com/", username="tom@gmail.com", password="123 456")`. (Pull #1601)
 * Support `url.copy_with(params=...)`. (Pull #1601)
 * Add `url.params` parameter, returning an immutable `QueryParams` instance. (Pull #1601)
 * Support query manipulation methods on the URL class. These are `url.copy_set_param()`, `url.copy_add_param()`, `url.copy_remove_param()`, `url.copy_merge_params()`. (Pull #1601)
-* The `httpx.URL` class now performs port normalization, so `:80` ports are stripped from `http` URLs and `:443` ports are stripped from `https` URLs. (Pull #1603)
+* The `httpxp.URL` class now performs port normalization, so `:80` ports are stripped from `http` URLs and `:443` ports are stripped from `https` URLs. (Pull #1603)
 * The `URL.host` property returns unicode strings for internationalized domain names. The `URL.raw_host` property returns byte strings with IDNA escaping applied. (Pull #1590)
 
 ### Fixed
@@ -427,12 +427,12 @@ The following API changes have been issuing deprecation warnings since 0.17.0 on
 
 ### Added
 
-* Add `httpx.MockTransport()`, allowing to mock out a transport using pre-determined responses. (Pull #1401, Pull #1449)
-* Add `httpx.HTTPTransport()` and `httpx.AsyncHTTPTransport()` default transports. (Pull #1399)
-* Add mount API support, using `httpx.Client(mounts=...)`. (Pull #1362)
+* Add `httpxp.MockTransport()`, allowing to mock out a transport using pre-determined responses. (Pull #1401, Pull #1449)
+* Add `httpxp.HTTPTransport()` and `httpxp.AsyncHTTPTransport()` default transports. (Pull #1399)
+* Add mount API support, using `httpxp.Client(mounts=...)`. (Pull #1362)
 * Add `chunk_size` parameter to `iter_raw()`, `iter_bytes()`, `iter_text()`. (Pull #1277)
-* Add `keepalive_expiry` parameter to `httpx.Limits()` configuration. (Pull #1398)
-* Add repr to `httpx.Cookies` to display available cookies. (Pull #1411)
+* Add `keepalive_expiry` parameter to `httpxp.Limits()` configuration. (Pull #1398)
+* Add repr to `httpxp.Cookies` to display available cookies. (Pull #1411)
 * Add support for `params=<tuple>` (previously only `params=<list>` was supported). (Pull #1426)
 
 ### Fixed
@@ -537,10 +537,10 @@ The following API changes have been issuing deprecation warnings since 0.17.0 on
 * The `Headers.getlist()` method had previously been deprecated in favour of `Headers.get_list()`. It is now fully removed.
 * The `QueryParams.getlist()` method had previously been deprecated in favour of `QueryParams.get_list()`. It is now fully removed.
 * The `URL.is_ssl` property had previously been deprecated in favour of `URL.scheme == "https"`. It is now fully removed.
-* The `httpx.PoolLimits` class had previously been deprecated in favour of `httpx.Limits`. It is now fully removed.
+* The `httpxp.PoolLimits` class had previously been deprecated in favour of `httpxp.Limits`. It is now fully removed.
 * The `max_keepalive` setting had previously been deprecated in favour of the more explicit `max_keepalive_connections`. It is now fully removed.
-* The verbose `httpx.Timeout(5.0, connect_timeout=60.0)` style had previously been deprecated in favour of `httpx.Timeout(5.0, connect=60.0)`. It is now fully removed.
-* Support for instantiating a timeout config missing some defaults, such as `httpx.Timeout(connect=60.0)`, had previously been deprecated in favour of enforcing a more explicit style, such as `httpx.Timeout(5.0, connect=60.0)`. This is now strictly enforced.
+* The verbose `httpxp.Timeout(5.0, connect_timeout=60.0)` style had previously been deprecated in favour of `httpxp.Timeout(5.0, connect=60.0)`. It is now fully removed.
+* Support for instantiating a timeout config missing some defaults, such as `httpxp.Timeout(connect=60.0)`, had previously been deprecated in favour of enforcing a more explicit style, such as `httpxp.Timeout(5.0, connect=60.0)`. This is now strictly enforced.
 
 ## 0.14.3 (September 2nd, 2020)
 
@@ -560,8 +560,8 @@ The following API changes have been issuing deprecation warnings since 0.17.0 on
 
 * Support `client.get(..., auth=None)` to bypass the default authentication on a clients. (Pull #1115)
 * Support `client.auth = ...` property setter. (Pull #1185)
-* Support `httpx.get(..., proxies=...)` on top-level request functions. (Pull #1198)
-* Display instances with nicer import styles. (Eg. <httpx.ReadTimeout ...>) (Pull #1155)
+* Support `httpxp.get(..., proxies=...)` on top-level request functions. (Pull #1198)
+* Display instances with nicer import styles. (Eg. <httpxp.ReadTimeout ...>) (Pull #1155)
 * Support `cookies=[(key, value)]` list-of-two-tuples style usage. (Pull #1211)
 
 ### Fixed
@@ -570,14 +570,14 @@ The following API changes have been issuing deprecation warnings since 0.17.0 on
 * Allow explicit `Content-Length` header on streaming requests. (Pull #1170)
 * Handle URL quoted usernames and passwords properly. (Pull #1159)
 * Use more consistent default for `HEAD` requests, setting `allow_redirects=True`. (Pull #1183)
-* If a transport error occurs while streaming the response, raise an `httpx` exception, not the underlying `httpcore` exception. (Pull #1190)
+* If a transport error occurs while streaming the response, raise an `httpxp` exception, not the underlying `httpcore` exception. (Pull #1190)
 * Include the underlying `httpcore` traceback, when transport exceptions occur. (Pull #1199)
 
 ## 0.14.1 (August 11th, 2020)
 
 ### Added
 
-* The `httpx.URL(...)` class now raises `httpx.InvalidURL` on invalid URLs, rather than exposing the underlying `rfc3986` exception. If a redirect response includes an invalid 'Location' header, then a `RemoteProtocolError` exception is raised, which will be associated with the request that caused it. (Pull #1163)
+* The `httpxp.URL(...)` class now raises `httpxp.InvalidURL` on invalid URLs, rather than exposing the underlying `rfc3986` exception. If a redirect response includes an invalid 'Location' header, then a `RemoteProtocolError` exception is raised, which will be associated with the request that caused it. (Pull #1163)
 
 ### Fixed
 
@@ -587,27 +587,27 @@ The following API changes have been issuing deprecation warnings since 0.17.0 on
 
 The 0.14 release includes a range of improvements to the public API, intended on preparing for our upcoming 1.0 release.
 
-* Our HTTP/2 support is now fully optional. **You now need to use `pip install httpx[http2]` if you want to include the HTTP/2 dependencies.**
+* Our HTTP/2 support is now fully optional. **You now need to use `pip install httpxp[http2]` if you want to include the HTTP/2 dependencies.**
 * Our HSTS support has now been removed. Rewriting URLs from `http` to `https` if the host is on the HSTS list can be beneficial in avoiding roundtrips to incorrectly formed URLs, but on balance we've decided to remove this feature, on the principle of least surprise. Most programmatic clients do not include HSTS support, and for now we're opting to remove our support for it.
-* Our exception hierarchy has been overhauled. Most users will want to stick with their existing `httpx.HTTPError` usage, but we've got a clearer overall structure now. See https://www.python-httpx.org/exceptions/ for more details.
+* Our exception hierarchy has been overhauled. Most users will want to stick with their existing `httpxp.HTTPError` usage, but we've got a clearer overall structure now. See https://www.python-httpx.org/exceptions/ for more details.
 
 When upgrading you should be aware of the following public API changes. Note that deprecated usages will currently continue to function, but will issue warnings.
 
-* You should now use `httpx.codes` consistently instead of `httpx.StatusCodes`.
-* Usage of `httpx.Timeout()` should now always include an explicit default. Eg. `httpx.Timeout(None, pool=5.0)`.
-* When using `httpx.Timeout()`, we now have more concisely named keyword arguments. Eg. `read=5.0`, instead of `read_timeout=5.0`.
-* Use `httpx.Limits()` instead of `httpx.PoolLimits()`, and `limits=...` instead of `pool_limits=...`.
-* The `httpx.Limits(max_keepalive=...)` argument is now deprecated in favour of a more explicit `httpx.Limits(max_keepalive_connections=...)`.
+* You should now use `httpxp.codes` consistently instead of `httpxp.StatusCodes`.
+* Usage of `httpxp.Timeout()` should now always include an explicit default. Eg. `httpxp.Timeout(None, pool=5.0)`.
+* When using `httpxp.Timeout()`, we now have more concisely named keyword arguments. Eg. `read=5.0`, instead of `read_timeout=5.0`.
+* Use `httpxp.Limits()` instead of `httpxp.PoolLimits()`, and `limits=...` instead of `pool_limits=...`.
+* The `httpxp.Limits(max_keepalive=...)` argument is now deprecated in favour of a more explicit `httpxp.Limits(max_keepalive_connections=...)`.
 * Keys used with `Client(proxies={...})` should now be in the style of `{"http://": ...}`, rather than `{"http": ...}`.
 * The multidict methods `Headers.getlist()` and `QueryParams.getlist()` are deprecated in favour of more consistent `.get_list()` variants.
 * The `URL.is_ssl` property is deprecated in favour of `URL.scheme == "https"`.
 * The `URL.join(relative_url=...)` method is now `URL.join(url=...)`. This change does not support warnings for the deprecated usage style.
 
-One notable aspect of the 0.14.0 release is that it tightens up the public API for `httpx`, by ensuring that several internal attributes and methods have now become strictly private.
+One notable aspect of the 0.14.0 release is that it tightens up the public API for `httpxp`, by ensuring that several internal attributes and methods have now become strictly private.
 
 The following previously had nominally public names on the client, but were all undocumented and intended solely for internal usage. They are all now replaced with underscored names, and should not be relied on or accessed.
 
-These changes should not affect users who have been working from the `httpx` documentation.
+These changes should not affect users who have been working from the `httpxp` documentation.
 
 * `.merge_url()`, `.merge_headers()`, `.merge_cookies()`, `.merge_queryparams()`
 * `.build_auth()`, `.build_redirect_request()`
@@ -624,23 +624,23 @@ Some areas of API which were already on the deprecation path, and were raising w
 * Drop `dispatch=...`` on client, which has been replaced by `transport=...``
 * Drop `soft_limit`, `hard_limit`, which have been replaced by `max_keepalive` and `max_connections`.
 * Drop `Response.stream` and` `Response.raw`, which have been replaced by ``.aiter_bytes` and `.aiter_raw`.
-* Drop `proxies=<transport instance>` in favor of `proxies=httpx.Proxy(...)`.
+* Drop `proxies=<transport instance>` in favor of `proxies=httpxp.Proxy(...)`.
 
 See pull requests #1057, #1058.
 
 ### Added
 
-* Added dedicated exception class `httpx.HTTPStatusError` for `.raise_for_status()` exceptions. (Pull #1072)
-* Added `httpx.create_ssl_context()` helper function. (Pull #996)
+* Added dedicated exception class `httpxp.HTTPStatusError` for `.raise_for_status()` exceptions. (Pull #1072)
+* Added `httpxp.create_ssl_context()` helper function. (Pull #996)
 * Support for proxy exclusions like `proxies={"https://www.example.com": None}`. (Pull #1099)
 * Support `QueryParams(None)` and `client.params = None`. (Pull #1060)
 
 ### Changed
 
-* Use `httpx.codes` consistently in favour of `httpx.StatusCodes` which is placed into deprecation. (Pull #1088)
-* Usage of `httpx.Timeout()` should now always include an explicit default. Eg. `httpx.Timeout(None, pool=5.0)`. (Pull #1085)
-* Switch to more concise `httpx.Timeout()` keyword arguments. Eg. `read=5.0`, instead of `read_timeout=5.0`. (Pull #1111)
-* Use `httpx.Limits()` instead of `httpx.PoolLimits()`, and `limits=...` instead of `pool_limits=...`. (Pull #1113)
+* Use `httpxp.codes` consistently in favour of `httpxp.StatusCodes` which is placed into deprecation. (Pull #1088)
+* Usage of `httpxp.Timeout()` should now always include an explicit default. Eg. `httpxp.Timeout(None, pool=5.0)`. (Pull #1085)
+* Switch to more concise `httpxp.Timeout()` keyword arguments. Eg. `read=5.0`, instead of `read_timeout=5.0`. (Pull #1111)
+* Use `httpxp.Limits()` instead of `httpxp.PoolLimits()`, and `limits=...` instead of `pool_limits=...`. (Pull #1113)
 * Keys used with `Client(proxies={...})` should now be in the style of `{"http://": ...}`, rather than `{"http": ...}`. (Pull #1127)
 * The multidict methods `Headers.getlist` and `QueryParams.getlist` are deprecated in favour of more consistent `.get_list()` variants. (Pull #1089)
 * `URL.port` becomes `Optional[int]`. Now only returns a port if one is explicitly included in the URL string. (Pull #1080)
@@ -675,7 +675,7 @@ See pull requests #1057, #1058.
 ### Fixed
 
 * Include explicit "Content-Length: 0" on POST, PUT, PATCH if no request body is used. (Pull #995)
-* Add `http2` option to `httpx.Client`. (Pull #982)
+* Add `http2` option to `httpxp.Client`. (Pull #982)
 * Tighten up API typing in places. (Pull #992, #999)
 
 ## 0.13.1 (May 22nd, 2020)
@@ -683,7 +683,7 @@ See pull requests #1057, #1058.
 ### Fixed
 
 * Fix pool options deprecation warning. (Pull #980)
-* Include `httpx.URLLib3ProxyTransport` in top-level API. (Pull #979)
+* Include `httpxp.URLLib3ProxyTransport` in top-level API. (Pull #979)
 
 ## 0.13.0 (May 22nd, 2020)
 
@@ -707,7 +707,7 @@ We also now have [a public "Transport API"](https://www.python-httpx.org/advance
 
 * Added `URLLib3Transport` class for optional `urllib3` transport support. (Pull #804, #963)
 * Streaming multipart uploads. (Pull #857)
-* Logging via HTTPCORE_LOG_LEVEL and HTTPX_LOG_LEVEL environment variables
+* Logging via HTTPCORE_LOG_LEVEL and HTTPXP_LOG_LEVEL environment variables
 and TRACE level logging. (Pull encode/httpcore#79)
 
 ### Fixed
@@ -726,11 +726,11 @@ and TRACE level logging. (Pull encode/httpcore#79)
 
 ## 0.13.0.dev2 (May 12th, 2020)
 
-The 0.13.0.dev2 is a *pre-release* version. To install it, use `pip install httpx --pre`.
+The 0.13.0.dev2 is a *pre-release* version. To install it, use `pip install httpxp --pre`.
 
 ### Added
 
-* Logging via HTTPCORE_LOG_LEVEL and HTTPX_LOG_LEVEL environment variables
+* Logging via HTTPCORE_LOG_LEVEL and HTTPXP_LOG_LEVEL environment variables
 and TRACE level logging. (HTTPCore Pull #79)
 
 ### Fixed
@@ -740,7 +740,7 @@ and TRACE level logging. (HTTPCore Pull #79)
 
 ## 0.13.0.dev1 (May 6th, 2020)
 
-The 0.13.0.dev1 is a *pre-release* version. To install it, use `pip install httpx --pre`.
+The 0.13.0.dev1 is a *pre-release* version. To install it, use `pip install httpxp --pre`.
 
 ### Fixed
 
@@ -750,7 +750,7 @@ which addresses problems in handling of headers when using proxies.
 
 ## 0.13.0.dev0 (April 30th, 2020)
 
-The 0.13.0.dev0 is a *pre-release* version. To install it, use `pip install httpx --pre`.
+The 0.13.0.dev0 is a *pre-release* version. To install it, use `pip install httpxp --pre`.
 
 This release switches to `httpcore` for all the internal networking, which means:
 
@@ -789,9 +789,9 @@ It also means we've had to remove our UDS support, since maintaining that would 
 
 ## 0.12.0 (March 9th, 2020)
 
-The 0.12 release tightens up the API expectations for `httpx` by switching to private module names to enforce better clarity around public API.
+The 0.12 release tightens up the API expectations for `httpxp` by switching to private module names to enforce better clarity around public API.
 
-All imports of `httpx` should import from the top-level package only, such as `from httpx import Request`, rather than importing from privately namespaced modules such as `from httpx._models import Request`.
+All imports of `httpxp` should import from the top-level package only, such as `from httpxp import Request`, rather than importing from privately namespaced modules such as `from httpxp._models import Request`.
 
 ### Added
 
@@ -808,7 +808,7 @@ All imports of `httpx` should import from the top-level package only, such as `f
 ### Fixed
 
 * Support basic auth credentials in proxy URLs. (Pull #780)
-* Fix `httpx.Proxy(url, mode="FORWARD_ONLY")` configuration. (Pull #788)
+* Fix `httpxp.Proxy(url, mode="FORWARD_ONLY")` configuration. (Pull #788)
 * Fallback to setting headers as UTF-8 if no encoding is specified. (Pull #820)
 * Close proxy dispatches classes on client close. (Pull #826)
 * Support custom `cert` parameters even if `verify=False`. (Pull #796)
@@ -827,28 +827,28 @@ All imports of `httpx` should import from the top-level package only, such as `f
 
 ## 0.11.0 (January 9th, 2020)
 
-The 0.11 release reintroduces our sync support, so that `httpx` now supports both a standard thread-concurrency API, and an async API.
+The 0.11 release reintroduces our sync support, so that `httpxp` now supports both a standard thread-concurrency API, and an async API.
 
-Existing async `httpx` users that are upgrading to 0.11 should ensure that:
+Existing async `httpxp` users that are upgrading to 0.11 should ensure that:
 
 * Async codebases should always use a client instance to make requests, instead of the top-level API.
-* The async client is named as `httpx.AsyncClient()`, instead of `httpx.Client()`.
-* When instantiating proxy configurations use the `httpx.Proxy()` class, instead of the previous `httpx.HTTPProxy()`. This new configuration class works for configuring both sync and async clients.
+* The async client is named as `httpxp.AsyncClient()`, instead of `httpxp.Client()`.
+* When instantiating proxy configurations use the `httpxp.Proxy()` class, instead of the previous `httpxp.HTTPProxy()`. This new configuration class works for configuring both sync and async clients.
 
 We believe the API is now pretty much stable, and are aiming for a 1.0 release sometime on or before April 2020.
 
 ### Changed
 
-- Top level API such as `httpx.get(url, ...)`, `httpx.post(url, ...)`, `httpx.request(method, url, ...)` becomes synchronous.
-- Added `httpx.Client()` for synchronous clients, with `httpx.AsyncClient` being used for async clients.
-- Switched to `proxies=httpx.Proxy(...)` for proxy configuration.
-- Network connection errors are wrapped in `httpx.NetworkError`, rather than exposing lower-level exception types directly.
+- Top level API such as `httpxp.get(url, ...)`, `httpxp.post(url, ...)`, `httpxp.request(method, url, ...)` becomes synchronous.
+- Added `httpxp.Client()` for synchronous clients, with `httpxp.AsyncClient` being used for async clients.
+- Switched to `proxies=httpxp.Proxy(...)` for proxy configuration.
+- Network connection errors are wrapped in `httpxp.NetworkError`, rather than exposing lower-level exception types directly.
 
 ### Removed
 
-- The `request.url.origin` property and `httpx.Origin` class are no longer available.
+- The `request.url.origin` property and `httpxp.Origin` class are no longer available.
 - The per-request `cert`, `verify`, and `trust_env` arguments are escalated from raising errors if used, to no longer being available. These arguments should be used on a per-client instance instead, or in the top-level API.
-- The `stream` argument has escalated from raising an error when used, to no longer being available. Use the `client.stream(...)` or `httpx.stream()` streaming API instead.
+- The `stream` argument has escalated from raising an error when used, to no longer being available. Use the `client.stream(...)` or `httpxp.stream()` streaming API instead.
 
 ### Fixed
 
@@ -934,7 +934,7 @@ The 0.9 releases brings some major new features, including:
 We've also removed all private types from the top-level package export.
 
 In order to ensure you are only ever working with public API you should make
-sure to only import the top-level package eg. `import httpx`, rather than
+sure to only import the top-level package eg. `import httpxp`, rather than
 importing modules within the package.
 
 ### Added
@@ -953,14 +953,14 @@ importing modules within the package.
 
 ### Changed
 
-- Added `httpx.stream()` API. Using `stream=True` now results in a warning. (Pull #600, #610)
+- Added `httpxp.stream()` API. Using `stream=True` now results in a warning. (Pull #600, #610)
 - HTTP/2 support is switched to "off by default", but can be enabled explicitly. (Pull #584)
 - Switched to `Client(http2=True)` API from `Client(http_versions=["HTTP/1.1", "HTTP/2"])`. (Pull #586)
 - Removed all private types from the top-level package export. (Pull #608)
 - The SSL configuration settings of `verify`, `cert`, and `trust_env` now raise warnings if used per-request when using a Client instance. They should always be set on the Client instance itself. (Pull #597)
 - Use plain strings "TUNNEL_ONLY" or "FORWARD_ONLY" on the HTTPProxy `proxy_mode` argument. The `HTTPProxyMode` enum still exists, but its usage will raise warnings. (#610)
 - Pool timeouts are now on the timeout configuration, not the pool limits configuration. (Pull #563)
-- The timeout configuration is now named `httpx.Timeout(...)`, not `httpx.TimeoutConfig(...)`. The old version currently remains as a synonym for backwards compatibility.  (Pull #591)
+- The timeout configuration is now named `httpxp.Timeout(...)`, not `httpxp.TimeoutConfig(...)`. The old version currently remains as a synonym for backwards compatibility.  (Pull #591)
 
 ---
 
@@ -1007,8 +1007,8 @@ importing modules within the package.
 ### Added
 
 - Allow lists of values to be passed to `params`. (Pull #386)
-- `ASGIDispatch`, `WSGIDispatch` are now available in the `httpx.dispatch` namespace. (Pull #407)
-- `HTTPError` is now available in the `httpx` namespace.  (Pull #421)
+- `ASGIDispatch`, `WSGIDispatch` are now available in the `httpxp.dispatch` namespace. (Pull #407)
+- `HTTPError` is now available in the `httpxp` namespace.  (Pull #421)
 - Add support for `start_tls()` to the Trio concurrency backend. (Pull #467)
 
 ### Fixed
@@ -1062,14 +1062,14 @@ importing modules within the package.
 
 ## 0.7.2 (August 28, 2019)
 
-- Enforce using `httpx.AsyncioBackend` for the synchronous client. (Pull #232)
-- `httpx.ConnectionPool` will properly release a dropped connection. (Pull #230)
+- Enforce using `httpxp.AsyncioBackend` for the synchronous client. (Pull #232)
+- `httpxp.ConnectionPool` will properly release a dropped connection. (Pull #230)
 - Remove the `raise_app_exceptions` argument from `Client`. (Pull #238)
 - `DecodeError` will no longer be raised for an empty body encoded with Brotli. (Pull #237)
 - Added `http_versions` parameter to `Client`. (Pull #250)
-- Only use HTTP/1.1 on short-lived connections like `httpx.get()`. (Pull #284)
+- Only use HTTP/1.1 on short-lived connections like `httpxp.get()`. (Pull #284)
 - Convert `Client.cookies` and `Client.headers` when set as a property. (Pull #274)
-- Setting `HTTPX_DEBUG=1` enables debug logging on all requests. (Pull #277)
+- Setting `HTTPXP_DEBUG=1` enables debug logging on all requests. (Pull #277)
 
 ## 0.7.1 (August 18, 2019)
 

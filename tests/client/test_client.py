@@ -6,7 +6,7 @@ from datetime import timedelta
 import chardet
 import pytest
 
-import httpx
+import httpxp
 
 
 def autodetect(content):
@@ -15,7 +15,7 @@ def autodetect(content):
 
 def test_get(server):
     url = server.url
-    with httpx.Client(http2=True) as http:
+    with httpxp.Client(http2=True) as http:
         response = http.get(url)
     assert response.status_code == 200
     assert response.url == url
@@ -39,8 +39,8 @@ def test_get(server):
     ],
 )
 def test_get_invalid_url(server, url):
-    with httpx.Client() as client:
-        with pytest.raises((httpx.UnsupportedProtocol, httpx.LocalProtocolError)):
+    with httpxp.Client() as client:
+        with pytest.raises((httpxp.UnsupportedProtocol, httpxp.LocalProtocolError)):
             client.get(url)
 
 
@@ -48,7 +48,7 @@ def test_build_request(server):
     url = server.url.copy_with(path="/echo_headers")
     headers = {"Custom-header": "value"}
 
-    with httpx.Client() as client:
+    with httpxp.Client() as client:
         request = client.build_request("GET", url)
         request.headers.update(headers)
         response = client.send(request)
@@ -63,7 +63,7 @@ def test_build_post_request(server):
     url = server.url.copy_with(path="/echo_headers")
     headers = {"Custom-header": "value"}
 
-    with httpx.Client() as client:
+    with httpxp.Client() as client:
         request = client.build_request("POST", url)
         request.headers.update(headers)
         response = client.send(request)
@@ -76,21 +76,21 @@ def test_build_post_request(server):
 
 
 def test_post(server):
-    with httpx.Client() as client:
+    with httpxp.Client() as client:
         response = client.post(server.url, content=b"Hello, world!")
     assert response.status_code == 200
     assert response.reason_phrase == "OK"
 
 
 def test_post_json(server):
-    with httpx.Client() as client:
+    with httpxp.Client() as client:
         response = client.post(server.url, json={"text": "Hello, world!"})
     assert response.status_code == 200
     assert response.reason_phrase == "OK"
 
 
 def test_stream_response(server):
-    with httpx.Client() as client:
+    with httpxp.Client() as client:
         with client.stream("GET", server.url) as response:
             content = response.read()
     assert response.status_code == 200
@@ -100,7 +100,7 @@ def test_stream_response(server):
 def test_stream_iterator(server):
     body = b""
 
-    with httpx.Client() as client:
+    with httpxp.Client() as client:
         with client.stream("GET", server.url) as response:
             for chunk in response.iter_bytes():
                 body += chunk
@@ -112,7 +112,7 @@ def test_stream_iterator(server):
 def test_raw_iterator(server):
     body = b""
 
-    with httpx.Client() as client:
+    with httpxp.Client() as client:
         with client.stream("GET", server.url) as response:
             for chunk in response.iter_raw():
                 body += chunk
@@ -126,19 +126,19 @@ def test_cannot_stream_async_request(server):
         yield b"Hello, "
         yield b"world!"
 
-    with httpx.Client() as client:
+    with httpxp.Client() as client:
         with pytest.raises(RuntimeError):
             client.post(server.url, content=hello_world())
 
 
 def test_raise_for_status(server):
-    with httpx.Client() as client:
+    with httpxp.Client() as client:
         for status_code in (200, 400, 404, 500, 505):
             response = client.request(
                 "GET", server.url.copy_with(path=f"/status/{status_code}")
             )
             if 400 <= status_code < 600:
-                with pytest.raises(httpx.HTTPStatusError) as exc_info:
+                with pytest.raises(httpxp.HTTPStatusError) as exc_info:
                     response.raise_for_status()
                 assert exc_info.value.response == response
                 assert exc_info.value.request.url.path == f"/status/{status_code}"
@@ -147,35 +147,35 @@ def test_raise_for_status(server):
 
 
 def test_options(server):
-    with httpx.Client() as client:
+    with httpxp.Client() as client:
         response = client.options(server.url)
     assert response.status_code == 200
     assert response.reason_phrase == "OK"
 
 
 def test_head(server):
-    with httpx.Client() as client:
+    with httpxp.Client() as client:
         response = client.head(server.url)
     assert response.status_code == 200
     assert response.reason_phrase == "OK"
 
 
 def test_put(server):
-    with httpx.Client() as client:
+    with httpxp.Client() as client:
         response = client.put(server.url, content=b"Hello, world!")
     assert response.status_code == 200
     assert response.reason_phrase == "OK"
 
 
 def test_patch(server):
-    with httpx.Client() as client:
+    with httpxp.Client() as client:
         response = client.patch(server.url, content=b"Hello, world!")
     assert response.status_code == 200
     assert response.reason_phrase == "OK"
 
 
 def test_delete(server):
-    with httpx.Client() as client:
+    with httpxp.Client() as client:
         response = client.delete(server.url)
     assert response.status_code == 200
     assert response.reason_phrase == "OK"
@@ -183,59 +183,59 @@ def test_delete(server):
 
 def test_base_url(server):
     base_url = server.url
-    with httpx.Client(base_url=base_url) as client:
+    with httpxp.Client(base_url=base_url) as client:
         response = client.get("/")
     assert response.status_code == 200
     assert response.url == base_url
 
 
 def test_merge_absolute_url():
-    client = httpx.Client(base_url="https://www.example.com/")
+    client = httpxp.Client(base_url="https://www.example.com/")
     request = client.build_request("GET", "http://www.example.com/")
     assert request.url == "http://www.example.com/"
 
 
 def test_merge_relative_url():
-    client = httpx.Client(base_url="https://www.example.com/")
+    client = httpxp.Client(base_url="https://www.example.com/")
     request = client.build_request("GET", "/testing/123")
     assert request.url == "https://www.example.com/testing/123"
 
 
 def test_merge_relative_url_with_path():
-    client = httpx.Client(base_url="https://www.example.com/some/path")
+    client = httpxp.Client(base_url="https://www.example.com/some/path")
     request = client.build_request("GET", "/testing/123")
     assert request.url == "https://www.example.com/some/path/testing/123"
 
 
 def test_merge_relative_url_with_dotted_path():
-    client = httpx.Client(base_url="https://www.example.com/some/path")
+    client = httpxp.Client(base_url="https://www.example.com/some/path")
     request = client.build_request("GET", "../testing/123")
     assert request.url == "https://www.example.com/some/testing/123"
 
 
 def test_merge_relative_url_with_path_including_colon():
-    client = httpx.Client(base_url="https://www.example.com/some/path")
+    client = httpxp.Client(base_url="https://www.example.com/some/path")
     request = client.build_request("GET", "/testing:123")
     assert request.url == "https://www.example.com/some/path/testing:123"
 
 
 def test_merge_relative_url_with_encoded_slashes():
-    client = httpx.Client(base_url="https://www.example.com/")
+    client = httpxp.Client(base_url="https://www.example.com/")
     request = client.build_request("GET", "/testing%2F123")
     assert request.url == "https://www.example.com/testing%2F123"
 
-    client = httpx.Client(base_url="https://www.example.com/base%2Fpath")
+    client = httpxp.Client(base_url="https://www.example.com/base%2Fpath")
     request = client.build_request("GET", "/testing")
     assert request.url == "https://www.example.com/base%2Fpath/testing"
 
 
 def test_context_managed_transport():
-    class Transport(httpx.BaseTransport):
+    class Transport(httpxp.BaseTransport):
         def __init__(self) -> None:
             self.events: list[str] = []
 
         def close(self):
-            # The base implementation of httpx.BaseTransport just
+            # The base implementation of httpxp.BaseTransport just
             # calls into `.close`, so simple transport cases can just override
             # this method for any cleanup, where more complex cases
             # might want to additionally override `__enter__`/`__exit__`.
@@ -250,7 +250,7 @@ def test_context_managed_transport():
             self.events.append("transport.__exit__")
 
     transport = Transport()
-    with httpx.Client(transport=transport):
+    with httpxp.Client(transport=transport):
         pass
 
     assert transport.events == [
@@ -261,13 +261,13 @@ def test_context_managed_transport():
 
 
 def test_context_managed_transport_and_mount():
-    class Transport(httpx.BaseTransport):
+    class Transport(httpxp.BaseTransport):
         def __init__(self, name: str) -> None:
             self.name: str = name
             self.events: list[str] = []
 
         def close(self):
-            # The base implementation of httpx.BaseTransport just
+            # The base implementation of httpxp.BaseTransport just
             # calls into `.close`, so simple transport cases can just override
             # this method for any cleanup, where more complex cases
             # might want to additionally override `__enter__`/`__exit__`.
@@ -283,7 +283,7 @@ def test_context_managed_transport_and_mount():
 
     transport = Transport(name="transport")
     mounted = Transport(name="mounted")
-    with httpx.Client(transport=transport, mounts={"http://www.example.org": mounted}):
+    with httpxp.Client(transport=transport, mounts={"http://www.example.org": mounted}):
         pass
 
     assert transport.events == [
@@ -299,11 +299,11 @@ def test_context_managed_transport_and_mount():
 
 
 def hello_world(request):
-    return httpx.Response(200, text="Hello, world!")
+    return httpxp.Response(200, text="Hello, world!")
 
 
 def test_client_closed_state_using_implicit_open():
-    client = httpx.Client(transport=httpx.MockTransport(hello_world))
+    client = httpxp.Client(transport=httpxp.MockTransport(hello_world))
 
     assert not client.is_closed
     client.get("http://example.com")
@@ -324,7 +324,7 @@ def test_client_closed_state_using_implicit_open():
 
 
 def test_client_closed_state_using_with_block():
-    with httpx.Client(transport=httpx.MockTransport(hello_world)) as client:
+    with httpxp.Client(transport=httpxp.MockTransport(hello_world)) as client:
         assert not client.is_closed
         client.get("http://example.com")
 
@@ -333,12 +333,12 @@ def test_client_closed_state_using_with_block():
         client.get("http://example.com")
 
 
-def echo_raw_headers(request: httpx.Request) -> httpx.Response:
+def echo_raw_headers(request: httpxp.Request) -> httpxp.Response:
     data = [
         (name.decode("ascii"), value.decode("ascii"))
         for name, value in request.headers.raw
     ]
-    return httpx.Response(200, json=data)
+    return httpxp.Response(200, json=data)
 
 
 def test_raw_client_header():
@@ -348,8 +348,8 @@ def test_raw_client_header():
     url = "http://example.org/echo_headers"
     headers = {"Example-Header": "example-value"}
 
-    client = httpx.Client(
-        transport=httpx.MockTransport(echo_raw_headers), headers=headers
+    client = httpxp.Client(
+        transport=httpxp.MockTransport(echo_raw_headers), headers=headers
     )
     response = client.get(url)
 
@@ -359,26 +359,26 @@ def test_raw_client_header():
         ["Accept", "*/*"],
         ["Accept-Encoding", "gzip, deflate, br, zstd"],
         ["Connection", "keep-alive"],
-        ["User-Agent", f"python-httpx/{httpx.__version__}"],
+        ["User-Agent", f"python-httpxp/{httpxp.__version__}"],
         ["Example-Header", "example-value"],
     ]
 
 
-def unmounted(request: httpx.Request) -> httpx.Response:
+def unmounted(request: httpxp.Request) -> httpxp.Response:
     data = {"app": "unmounted"}
-    return httpx.Response(200, json=data)
+    return httpxp.Response(200, json=data)
 
 
-def mounted(request: httpx.Request) -> httpx.Response:
+def mounted(request: httpxp.Request) -> httpxp.Response:
     data = {"app": "mounted"}
-    return httpx.Response(200, json=data)
+    return httpxp.Response(200, json=data)
 
 
 def test_mounted_transport():
-    transport = httpx.MockTransport(unmounted)
-    mounts = {"custom://": httpx.MockTransport(mounted)}
+    transport = httpxp.MockTransport(unmounted)
+    mounts = {"custom://": httpxp.MockTransport(mounted)}
 
-    client = httpx.Client(transport=transport, mounts=mounts)
+    client = httpxp.Client(transport=transport, mounts=mounts)
 
     response = client.get("https://www.example.com")
     assert response.status_code == 200
@@ -390,9 +390,9 @@ def test_mounted_transport():
 
 
 def test_all_mounted_transport():
-    mounts = {"all://": httpx.MockTransport(mounted)}
+    mounts = {"all://": httpxp.MockTransport(mounted)}
 
-    client = httpx.Client(mounts=mounts)
+    client = httpxp.Client(mounts=mounts)
 
     response = client.get("https://www.example.com")
     assert response.status_code == 200
@@ -401,7 +401,7 @@ def test_all_mounted_transport():
 
 def test_server_extensions(server):
     url = server.url.copy_with(path="/http_version_2")
-    with httpx.Client(http2=True) as client:
+    with httpxp.Client(http2=True) as client:
         response = client.get(url)
     assert response.status_code == 200
     assert response.extensions["http_version"] == b"HTTP/1.1"
@@ -423,10 +423,10 @@ def test_client_decode_text_using_autodetect():
 
     def cp1252_but_no_content_type(request):
         content = text.encode("ISO-8859-1")
-        return httpx.Response(200, content=content)
+        return httpxp.Response(200, content=content)
 
-    transport = httpx.MockTransport(cp1252_but_no_content_type)
-    with httpx.Client(transport=transport, default_encoding=autodetect) as client:
+    transport = httpxp.MockTransport(cp1252_but_no_content_type)
+    with httpxp.Client(transport=transport, default_encoding=autodetect) as client:
         response = client.get("http://www.example.com")
 
         assert response.status_code == 200
@@ -450,10 +450,10 @@ def test_client_decode_text_using_explicit_encoding():
 
     def cp1252_but_no_content_type(request):
         content = text.encode("ISO-8859-1")
-        return httpx.Response(200, content=content)
+        return httpxp.Response(200, content=content)
 
-    transport = httpx.MockTransport(cp1252_but_no_content_type)
-    with httpx.Client(transport=transport, default_encoding=autodetect) as client:
+    transport = httpxp.MockTransport(cp1252_but_no_content_type)
+    with httpxp.Client(transport=transport, default_encoding=autodetect) as client:
         response = client.get("http://www.example.com")
 
         assert response.status_code == 200

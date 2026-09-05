@@ -1,6 +1,6 @@
 # Async Support
 
-HTTPX offers a standard synchronous API by default, but also gives you
+HTTPXP offers a standard synchronous API by default, but also gives you
 the option of an async client if you need it.
 
 Async is a concurrency model that is far more efficient than multi-threading,
@@ -15,7 +15,7 @@ async client for sending outgoing HTTP requests.
 To make asynchronous requests, you'll need an `AsyncClient`.
 
 ```pycon
->>> async with httpx.AsyncClient() as client:
+>>> async with httpxp.AsyncClient() as client:
 ...     r = await client.get('https://www.example.com/')
 ...
 >>> r
@@ -46,10 +46,10 @@ The request methods are all async, so you should use `response = await client.ge
 
 ### Opening and closing clients
 
-Use `async with httpx.AsyncClient()` if you want a context-managed client...
+Use `async with httpxp.AsyncClient()` if you want a context-managed client...
 
 ```python
-async with httpx.AsyncClient() as client:
+async with httpxp.AsyncClient() as client:
     ...
 ```
 
@@ -59,7 +59,7 @@ async with httpx.AsyncClient() as client:
 Alternatively, use `await client.aclose()` if you want to close a client explicitly:
 
 ```python
-client = httpx.AsyncClient()
+client = httpxp.AsyncClient()
 ...
 await client.aclose()
 ```
@@ -69,7 +69,7 @@ await client.aclose()
 The `AsyncClient.stream(method, url, ...)` method is an async context block.
 
 ```pycon
->>> client = httpx.AsyncClient()
+>>> client = httpxp.AsyncClient()
 >>> async with client.stream('GET', 'https://www.example.com/') as response:
 ...     async for chunk in response.aiter_bytes():
 ...         ...
@@ -89,11 +89,11 @@ For situations when context block usage is not practical, it is possible to ente
 Example in the context of forwarding the response to a streaming web endpoint with [Starlette](https://www.starlette.io):
 
 ```python
-import httpx
+import httpxp
 from starlette.background import BackgroundTask
 from starlette.responses import StreamingResponse
 
-client = httpx.AsyncClient()
+client = httpxp.AsyncClient()
 
 async def home(request):
     req = client.build_request("GET", "https://www.example.com/")
@@ -117,20 +117,20 @@ await client.post(url, content=upload_bytes())
 
 ### Explicit transport instances
 
-When instantiating a transport instance directly, you need to use `httpx.AsyncHTTPTransport`.
+When instantiating a transport instance directly, you need to use `httpxp.AsyncHTTPTransport`.
 
 For instance:
 
 ```pycon
->>> import httpx
->>> transport = httpx.AsyncHTTPTransport(retries=1)
->>> async with httpx.AsyncClient(transport=transport) as client:
+>>> import httpxp
+>>> transport = httpxp.AsyncHTTPTransport(retries=1)
+>>> async with httpxp.AsyncClient(transport=transport) as client:
 >>>     ...
 ```
 
 ## Supported async environments
 
-HTTPX supports either `asyncio` or `trio` as an async environment.
+HTTPXP supports either `asyncio` or `trio` as an async environment.
 
 It will auto-detect which of those two to use as the backend
 for socket operations and concurrency primitives.
@@ -142,10 +142,10 @@ for writing concurrent code with the async/await syntax.
 
 ```python
 import asyncio
-import httpx
+import httpxp
 
 async def main():
-    async with httpx.AsyncClient() as client:
+    async with httpxp.AsyncClient() as client:
         response = await client.get('https://www.example.com/')
         print(response)
 
@@ -158,11 +158,11 @@ Trio is [an alternative async library](https://trio.readthedocs.io/en/stable/),
 designed around the [the principles of structured concurrency](https://en.wikipedia.org/wiki/Structured_concurrency).
 
 ```python
-import httpx
+import httpxp
 import trio
 
 async def main():
-    async with httpx.AsyncClient() as client:
+    async with httpxp.AsyncClient() as client:
         response = await client.get('https://www.example.com/')
         print(response)
 
@@ -178,11 +178,11 @@ trio.run(main)
 AnyIO is an [asynchronous networking and concurrency library](https://anyio.readthedocs.io/) that works on top of either `asyncio` or `trio`. It blends in with native libraries of your chosen backend (defaults to `asyncio`).
 
 ```python
-import httpx
+import httpxp
 import anyio
 
 async def main():
-    async with httpx.AsyncClient() as client:
+    async with httpxp.AsyncClient() as client:
         response = await client.get('https://www.example.com/')
         print(response)
 

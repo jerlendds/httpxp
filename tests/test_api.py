@@ -2,11 +2,11 @@ import typing
 
 import pytest
 
-import httpx
+import httpxp
 
 
 def test_get(server):
-    response = httpx.get(server.url)
+    response = httpxp.get(server.url)
     assert response.status_code == 200
     assert response.reason_phrase == "OK"
     assert response.text == "Hello, world!"
@@ -14,7 +14,7 @@ def test_get(server):
 
 
 def test_post(server):
-    response = httpx.post(server.url, content=b"Hello, world!")
+    response = httpxp.post(server.url, content=b"Hello, world!")
     assert response.status_code == 200
     assert response.reason_phrase == "OK"
 
@@ -25,55 +25,55 @@ def test_post_byte_iterator(server):
         yield b", "
         yield b"world!"
 
-    response = httpx.post(server.url, content=data())
+    response = httpxp.post(server.url, content=data())
     assert response.status_code == 200
     assert response.reason_phrase == "OK"
 
 
 def test_post_byte_stream(server):
-    class Data(httpx.SyncByteStream):
+    class Data(httpxp.SyncByteStream):
         def __iter__(self):
             yield b"Hello"
             yield b", "
             yield b"world!"
 
-    response = httpx.post(server.url, content=Data())
+    response = httpxp.post(server.url, content=Data())
     assert response.status_code == 200
     assert response.reason_phrase == "OK"
 
 
 def test_options(server):
-    response = httpx.options(server.url)
+    response = httpxp.options(server.url)
     assert response.status_code == 200
     assert response.reason_phrase == "OK"
 
 
 def test_head(server):
-    response = httpx.head(server.url)
+    response = httpxp.head(server.url)
     assert response.status_code == 200
     assert response.reason_phrase == "OK"
 
 
 def test_put(server):
-    response = httpx.put(server.url, content=b"Hello, world!")
+    response = httpxp.put(server.url, content=b"Hello, world!")
     assert response.status_code == 200
     assert response.reason_phrase == "OK"
 
 
 def test_patch(server):
-    response = httpx.patch(server.url, content=b"Hello, world!")
+    response = httpxp.patch(server.url, content=b"Hello, world!")
     assert response.status_code == 200
     assert response.reason_phrase == "OK"
 
 
 def test_delete(server):
-    response = httpx.delete(server.url)
+    response = httpxp.delete(server.url)
     assert response.status_code == 200
     assert response.reason_phrase == "OK"
 
 
 def test_stream(server):
-    with httpx.stream("GET", server.url) as response:
+    with httpxp.stream("GET", server.url) as response:
         response.read()
 
     assert response.status_code == 200
@@ -83,20 +83,15 @@ def test_stream(server):
 
 
 def test_get_invalid_url():
-    with pytest.raises(httpx.UnsupportedProtocol):
-        httpx.get("invalid://example.org")
+    with pytest.raises(httpxp.UnsupportedProtocol):
+        httpxp.get("invalid://example.org")
 
 
-# check that httpcore isn't imported until we do a request
-def test_httpcore_lazy_loading(server):
+def test_native_backend_loading(server):
     import sys
 
-    # unload our module if it is already loaded
-    if "httpx" in sys.modules:
-        del sys.modules["httpx"]
-        del sys.modules["httpcore"]
-    import httpx
-
+    sys.modules.pop("httpcore", None)
+    response = httpxp.get(server.url)
+    assert response.status_code == 200
+    assert "httpxp._native" in sys.modules
     assert "httpcore" not in sys.modules
-    _response = httpx.get(server.url)
-    assert "httpcore" in sys.modules

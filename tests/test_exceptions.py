@@ -2,62 +2,60 @@ from __future__ import annotations
 
 import typing
 
-import httpcore
 import pytest
 
-import httpx
+import httpxp
 
 if typing.TYPE_CHECKING:  # pragma: no cover
     from conftest import TestServer
 
 
-def test_httpcore_all_exceptions_mapped() -> None:
-    """
-    All exception classes exposed by HTTPCore are properly mapped to an HTTPX-specific
-    exception class.
-    """
-    expected_mapped_httpcore_exceptions = {
-        value.__name__
-        for _, value in vars(httpcore).items()
-        if isinstance(value, type)
-        and issubclass(value, Exception)
-        and value is not httpcore.ConnectionNotAvailable
+def test_transport_exception_exports() -> None:
+    """The native migration preserves the public transport exception names."""
+    names = {
+        "TimeoutException",
+        "ConnectTimeout",
+        "ReadTimeout",
+        "WriteTimeout",
+        "PoolTimeout",
+        "NetworkError",
+        "ConnectError",
+        "ReadError",
+        "WriteError",
+        "CloseError",
+        "ProxyError",
+        "UnsupportedProtocol",
+        "ProtocolError",
+        "LocalProtocolError",
+        "RemoteProtocolError",
     }
-
-    httpx_exceptions = {
-        value.__name__
-        for _, value in vars(httpx).items()
-        if isinstance(value, type) and issubclass(value, Exception)
-    }
-
-    unmapped_exceptions = expected_mapped_httpcore_exceptions - httpx_exceptions
-
-    if unmapped_exceptions:  # pragma: no cover
-        pytest.fail(f"Unmapped httpcore exceptions: {unmapped_exceptions}")
+    for name in names:
+        assert name in httpxp.__all__
+        assert issubclass(getattr(httpxp, name), httpxp.TransportError)
 
 
-def test_httpcore_exception_mapping(server: TestServer) -> None:
+def test_native_exception_mapping(server: TestServer) -> None:
     """
-    HTTPCore exception mapping works as expected.
+    Native wreq errors use the existing Python exception classes.
     """
     impossible_port = 123456
-    with pytest.raises(httpx.ConnectError):
-        httpx.get(server.url.copy_with(port=impossible_port))
+    with pytest.raises(httpxp.ConnectError):
+        httpxp.get(server.url.copy_with(port=impossible_port))
 
-    with pytest.raises(httpx.ReadTimeout):
-        httpx.get(
+    with pytest.raises(httpxp.ReadTimeout):
+        httpxp.get(
             server.url.copy_with(path="/slow_response"),
-            timeout=httpx.Timeout(5, read=0.01),
+            timeout=httpxp.Timeout(5, read=0.01),
         )
 
 
 def test_request_attribute() -> None:
     # Exception without request attribute
-    exc = httpx.ReadTimeout("Read operation timed out")
+    exc = httpxp.ReadTimeout("Read operation timed out")
     with pytest.raises(RuntimeError):
         exc.request  # noqa: B018
 
     # Exception with request attribute
-    request = httpx.Request("GET", "https://www.example.com")
-    exc = httpx.ReadTimeout("Read operation timed out", request=request)
+    request = httpxp.Request("GET", "https://www.example.com")
+    exc = httpxp.ReadTimeout("Read operation timed out", request=request)
     assert exc.request == request

@@ -10,3 +10,14 @@ venv*/
 .python-version
 build/
 dist/
+
+
+# Added by cargo
+
+/target
+
+# Native extension built locally
+*.so
+*.pyd
+
+.venv/

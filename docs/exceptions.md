@@ -1,8 +1,8 @@
 # Exceptions
 
-This page lists exceptions that may be raised when using HTTPX.
+This page lists exceptions that may be raised when using HTTPXP.
 
-For an overview of how to work with HTTPX exceptions, see [Exceptions (Quickstart)](quickstart.md#exceptions).
+For an overview of how to work with HTTPXP exceptions, see [Exceptions (Quickstart)](quickstart.md#exceptions).
 
 ## The exception hierarchy
 
@@ -39,86 +39,86 @@ For an overview of how to work with HTTPX exceptions, see [Exceptions (Quickstar
 
 ## Exception classes
 
-::: httpx.HTTPError
+::: httpxp.HTTPError
     :docstring:
 
-::: httpx.RequestError
+::: httpxp.RequestError
     :docstring:
 
-::: httpx.TransportError
+::: httpxp.TransportError
     :docstring:
 
-::: httpx.TimeoutException
+::: httpxp.TimeoutException
     :docstring:
 
-::: httpx.ConnectTimeout
+::: httpxp.ConnectTimeout
     :docstring:
 
-::: httpx.ReadTimeout
+::: httpxp.ReadTimeout
     :docstring:
 
-::: httpx.WriteTimeout
+::: httpxp.WriteTimeout
     :docstring:
 
-::: httpx.PoolTimeout
+::: httpxp.PoolTimeout
     :docstring:
 
-::: httpx.NetworkError
+::: httpxp.NetworkError
     :docstring:
 
-::: httpx.ConnectError
+::: httpxp.ConnectError
     :docstring:
 
-::: httpx.ReadError
+::: httpxp.ReadError
     :docstring:
 
-::: httpx.WriteError
+::: httpxp.WriteError
     :docstring:
 
-::: httpx.CloseError
+::: httpxp.CloseError
     :docstring:
 
-::: httpx.ProtocolError
+::: httpxp.ProtocolError
     :docstring:
 
-::: httpx.LocalProtocolError
+::: httpxp.LocalProtocolError
     :docstring:
 
-::: httpx.RemoteProtocolError
+::: httpxp.RemoteProtocolError
     :docstring:
 
-::: httpx.ProxyError
+::: httpxp.ProxyError
     :docstring:
 
-::: httpx.UnsupportedProtocol
+::: httpxp.UnsupportedProtocol
     :docstring:
 
-::: httpx.DecodingError
+::: httpxp.DecodingError
     :docstring:
 
-::: httpx.TooManyRedirects
+::: httpxp.TooManyRedirects
     :docstring:
 
-::: httpx.HTTPStatusError
+::: httpxp.HTTPStatusError
     :docstring:
 
-::: httpx.InvalidURL
+::: httpxp.InvalidURL
     :docstring:
 
-::: httpx.CookieConflict
+::: httpxp.CookieConflict
     :docstring:
 
-::: httpx.StreamError
+::: httpxp.StreamError
     :docstring:
 
-::: httpx.StreamConsumed
+::: httpxp.StreamConsumed
     :docstring:
 
-::: httpx.StreamClosed
+::: httpxp.StreamClosed
     :docstring:
 
-::: httpx.ResponseNotRead
+::: httpxp.ResponseNotRead
     :docstring:
 
-::: httpx.RequestNotRead
+::: httpxp.RequestNotRead
     :docstring:

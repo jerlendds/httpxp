@@ -2,11 +2,11 @@ import http
 
 import pytest
 
-import httpx
+import httpxp
 
 
 def test_cookies():
-    cookies = httpx.Cookies({"name": "value"})
+    cookies = httpxp.Cookies({"name": "value"})
     assert cookies["name"] == "value"
     assert "name" in cookies
     assert len(cookies) == 1
@@ -21,8 +21,8 @@ def test_cookies():
 
 
 def test_cookies_update():
-    cookies = httpx.Cookies()
-    more_cookies = httpx.Cookies()
+    cookies = httpxp.Cookies()
+    more_cookies = httpxp.Cookies()
     more_cookies.set("name", "value", domain="example.com")
 
     cookies.update(more_cookies)
@@ -31,11 +31,11 @@ def test_cookies_update():
 
 
 def test_cookies_with_domain():
-    cookies = httpx.Cookies()
+    cookies = httpxp.Cookies()
     cookies.set("name", "value", domain="example.com")
     cookies.set("name", "value", domain="example.org")
 
-    with pytest.raises(httpx.CookieConflict):
+    with pytest.raises(httpxp.CookieConflict):
         cookies["name"]
 
     cookies.clear(domain="example.com")
@@ -43,7 +43,7 @@ def test_cookies_with_domain():
 
 
 def test_cookies_with_domain_and_path():
-    cookies = httpx.Cookies()
+    cookies = httpxp.Cookies()
     cookies.set("name", "value", domain="example.com", path="/subpath/1")
     cookies.set("name", "value", domain="example.com", path="/subpath/2")
     cookies.clear(domain="example.com", path="/subpath/1")
@@ -68,10 +68,10 @@ def test_multiple_set_cookie():
             b"08-Feb-2099 18:33:35 GMT; path=/; domain=.example.org; HttpOnly",
         ),
     ]
-    request = httpx.Request("GET", "https://www.example.org")
-    response = httpx.Response(200, request=request, headers=headers)
+    request = httpxp.Request("GET", "https://www.example.org")
+    response = httpxp.Response(200, request=request, headers=headers)
 
-    cookies = httpx.Cookies(jar)
+    cookies = httpxp.Cookies(jar)
     cookies.extract_cookies(response)
 
     assert len(cookies) == 2
@@ -80,7 +80,7 @@ def test_multiple_set_cookie():
 def test_cookies_can_be_a_list_of_tuples():
     cookies_val = [("name1", "val1"), ("name2", "val2")]
 
-    cookies = httpx.Cookies(cookies_val)
+    cookies = httpxp.Cookies(cookies_val)
 
     assert len(cookies.items()) == 2
     for k, v in cookies_val:
@@ -88,7 +88,7 @@ def test_cookies_can_be_a_list_of_tuples():
 
 
 def test_cookies_repr():
-    cookies = httpx.Cookies()
+    cookies = httpxp.Cookies()
     cookies.set(name="foo", value="bar", domain="http://blah.com")
     cookies.set(name="fizz", value="buzz", domain="http://hello.com")
 

@@ -5,8 +5,8 @@ import random
 
 import pytest
 
-import httpx
-from httpx._utils import URLPattern, get_environment_proxies
+import httpxp
+from httpxp._utils import URLPattern, get_environment_proxies
 
 
 @pytest.mark.parametrize(
@@ -24,13 +24,13 @@ from httpx._utils import URLPattern, get_environment_proxies
 )
 def test_encoded(encoding):
     content = '{"abc": 123}'.encode(encoding)
-    response = httpx.Response(200, content=content)
+    response = httpxp.Response(200, content=content)
     assert response.json() == {"abc": 123}
 
 
 def test_bad_utf_like_encoding():
     content = b"\x00\x00\x00\x00"
-    response = httpx.Response(200, content=content)
+    response = httpxp.Response(200, content=content)
     with pytest.raises(json.decoder.JSONDecodeError):
         response.json()
 
@@ -46,19 +46,19 @@ def test_bad_utf_like_encoding():
 )
 def test_guess_by_bom(encoding, expected):
     content = '\ufeff{"abc": 123}'.encode(encoding)
-    response = httpx.Response(200, content=content)
+    response = httpxp.Response(200, content=content)
     assert response.json() == {"abc": 123}
 
 
 def test_logging_request(server, caplog):
     caplog.set_level(logging.INFO)
-    with httpx.Client() as client:
+    with httpxp.Client() as client:
         response = client.get(server.url)
         assert response.status_code == 200
 
     assert caplog.record_tuples == [
         (
-            "httpx",
+            "httpxp",
             logging.INFO,
             'HTTP Request: GET http://127.0.0.1:8000/ "HTTP/1.1 200 OK"',
         )
@@ -67,19 +67,19 @@ def test_logging_request(server, caplog):
 
 def test_logging_redirect_chain(server, caplog):
     caplog.set_level(logging.INFO)
-    with httpx.Client(follow_redirects=True) as client:
+    with httpxp.Client(follow_redirects=True) as client:
         response = client.get(server.url.copy_with(path="/redirect_301"))
         assert response.status_code == 200
 
     assert caplog.record_tuples == [
         (
-            "httpx",
+            "httpxp",
             logging.INFO,
             "HTTP Request: GET http://127.0.0.1:8000/redirect_301"
             ' "HTTP/1.1 301 Moved Permanently"',
         ),
         (
-            "httpx",
+            "httpxp",
             logging.INFO,
             'HTTP Request: GET http://127.0.0.1:8000/ "HTTP/1.1 200 OK"',
         ),
@@ -131,7 +131,7 @@ def test_get_environment_proxies(environment, proxies):
 )
 def test_url_matches(pattern, url, expected):
     pattern = URLPattern(pattern)
-    assert pattern.matches(httpx.URL(url)) == expected
+    assert pattern.matches(httpxp.URL(url)) == expected
 
 
 def test_pattern_priority():

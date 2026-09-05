@@ -1,16 +1,16 @@
 Authentication can either be included on a per-request basis...
 
 ```pycon
->>> auth = httpx.BasicAuth(username="username", password="secret")
->>> client = httpx.Client()
+>>> auth = httpxp.BasicAuth(username="username", password="secret")
+>>> client = httpxp.Client()
 >>> response = client.get("https://www.example.com/", auth=auth)
 ```
 
 Or configured on the client instance, ensuring that all outgoing requests will include authentication credentials...
 
 ```pycon
->>> auth = httpx.BasicAuth(username="username", password="secret")
->>> client = httpx.Client(auth=auth)
+>>> auth = httpxp.BasicAuth(username="username", password="secret")
+>>> client = httpxp.Client(auth=auth)
 >>> response = client.get("https://www.example.com/")
 ```
 
@@ -19,8 +19,8 @@ Or configured on the client instance, ensuring that all outgoing requests will i
 HTTP basic authentication is an unencrypted authentication scheme that uses a simple encoding of the username and password in the request `Authorization` header. Since it is unencrypted it should typically only be used over `https`, although this is not strictly enforced.
 
 ```pycon
->>> auth = httpx.BasicAuth(username="finley", password="secret")
->>> client = httpx.Client(auth=auth)
+>>> auth = httpxp.BasicAuth(username="finley", password="secret")
+>>> client = httpxp.Client(auth=auth)
 >>> response = client.get("https://httpbin.org/basic-auth/finley/secret")
 >>> response
 <Response [200 OK]>
@@ -31,8 +31,8 @@ HTTP basic authentication is an unencrypted authentication scheme that uses a si
 HTTP digest authentication is a challenge-response authentication scheme. Unlike basic authentication it provides encryption, and can be used over unencrypted `http` connections. It requires an additional round-trip in order to negotiate the authentication. 
 
 ```pycon
->>> auth = httpx.DigestAuth(username="olivia", password="secret")
->>> client = httpx.Client(auth=auth)
+>>> auth = httpxp.DigestAuth(username="olivia", password="secret")
+>>> client = httpxp.Client(auth=auth)
 >>> response = client.get("https://httpbin.org/digest-auth/auth/olivia/secret")
 >>> response
 <Response [200 OK]>
@@ -42,7 +42,7 @@ HTTP digest authentication is a challenge-response authentication scheme. Unlike
 
 ## NetRC authentication
 
-HTTPX can be configured to use [a `.netrc` config file](https://everything.curl.dev/usingcurl/netrc) for authentication.
+HTTPXP can be configured to use [a `.netrc` config file](https://everything.curl.dev/usingcurl/netrc) for authentication.
 
 The `.netrc` config file allows authentication credentials to be associated with specified hosts. When a request is made to a host that is found in the netrc file, the username and password will be included using HTTP basic authentication.
 
@@ -53,33 +53,33 @@ machine example.org
 login example-username
 password example-password
 
-machine python-httpx.org
+machine example.org
 login other-username
 password other-password
 ```
 
-Some examples of configuring `.netrc` authentication with `httpx`.
+Some examples of configuring `.netrc` authentication with `httpxp`.
 
 Use the default `.netrc` file in the users home directory:
 
 ```pycon
->>> auth = httpx.NetRCAuth()
->>> client = httpx.Client(auth=auth)
+>>> auth = httpxp.NetRCAuth()
+>>> client = httpxp.Client(auth=auth)
 ```
 
 Use an explicit path to a `.netrc` file:
 
 ```pycon
->>> auth = httpx.NetRCAuth(file="/path/to/.netrc")
->>> client = httpx.Client(auth=auth)
+>>> auth = httpxp.NetRCAuth(file="/path/to/.netrc")
+>>> client = httpxp.Client(auth=auth)
 ```
 
 Use the `NETRC` environment variable to configure a path to the `.netrc` file,
 or fallback to the default.
 
 ```pycon
->>> auth = httpx.NetRCAuth(file=os.environ.get("NETRC"))
->>> client = httpx.Client(auth=auth)
+>>> auth = httpxp.NetRCAuth(file=os.environ.get("NETRC"))
+>>> client = httpxp.Client(auth=auth)
 ```
 
 The `NetRCAuth()` class uses [the `netrc.netrc()` function from the Python standard library](https://docs.python.org/3/library/netrc.html). See the documentation there for more details on exceptions that may be raised if the `.netrc` file is not found, or cannot be parsed.
@@ -89,14 +89,14 @@ The `NetRCAuth()` class uses [the `netrc.netrc()` function from the Python stand
 When issuing requests or instantiating a client, the `auth` argument can be used to pass an authentication scheme to use. The `auth` argument may be one of the following...
 
 * A two-tuple of `username`/`password`, to be used with basic authentication.
-* An instance of `httpx.BasicAuth()`, `httpx.DigestAuth()`, or `httpx.NetRCAuth()`.
+* An instance of `httpxp.BasicAuth()`, `httpxp.DigestAuth()`, or `httpxp.NetRCAuth()`.
 * A callable, accepting a request and returning an authenticated request instance.
-* An instance of subclasses of `httpx.Auth`.
+* An instance of subclasses of `httpxp.Auth`.
 
-The most involved of these is the last, which allows you to create authentication flows involving one or more requests. A subclass of `httpx.Auth` should implement `def auth_flow(request)`, and yield any requests that need to be made...
+The most involved of these is the last, which allows you to create authentication flows involving one or more requests. A subclass of `httpxp.Auth` should implement `def auth_flow(request)`, and yield any requests that need to be made...
 
 ```python
-class MyCustomAuth(httpx.Auth):
+class MyCustomAuth(httpxp.Auth):
     def __init__(self, token):
         self.token = token
 
@@ -109,7 +109,7 @@ class MyCustomAuth(httpx.Auth):
 If the auth flow requires more than one request, you can issue multiple yields, and obtain the response in each case...
 
 ```python
-class MyCustomAuth(httpx.Auth):
+class MyCustomAuth(httpxp.Auth):
     def __init__(self, token):
         self.token = token
 
@@ -127,7 +127,7 @@ Custom authentication classes are designed to not perform any I/O, so that they 
 You will then be able to access `request.content` inside the `.auth_flow()` method.
 
 ```python
-class MyCustomAuth(httpx.Auth):
+class MyCustomAuth(httpxp.Auth):
     requires_request_body = True
 
     def __init__(self, token):
@@ -150,7 +150,7 @@ class MyCustomAuth(httpx.Auth):
 Similarly, if you are implementing a scheme that requires access to the response body, then use the `requires_response_body` property.   You will then be able to access response body properties and methods such as `response.content`, `response.text`, `response.json()`, etc.
 
 ```python
-class MyCustomAuth(httpx.Auth):
+class MyCustomAuth(httpxp.Auth):
     requires_response_body = True
 
     def __init__(self, access_token, refresh_token, refresh_url):
@@ -172,7 +172,7 @@ class MyCustomAuth(httpx.Auth):
             yield request
 
     def build_refresh_request(self):
-        # Return an `httpx.Request` for refreshing tokens.
+        # Return an `httpxp.Request` for refreshing tokens.
         ...
 
     def update_tokens(self, response):
@@ -182,15 +182,15 @@ class MyCustomAuth(httpx.Auth):
         ...
 ```
 
-If you _do_ need to perform I/O other than HTTP requests, such as accessing a disk-based cache, or you need to use concurrency primitives, such as locks, then you should override `.sync_auth_flow()` and `.async_auth_flow()` (instead of `.auth_flow()`). The former will be used by `httpx.Client`, while the latter will be used by `httpx.AsyncClient`.
+If you _do_ need to perform I/O other than HTTP requests, such as accessing a disk-based cache, or you need to use concurrency primitives, such as locks, then you should override `.sync_auth_flow()` and `.async_auth_flow()` (instead of `.auth_flow()`). The former will be used by `httpxp.Client`, while the latter will be used by `httpxp.AsyncClient`.
 
 ```python
 import asyncio
 import threading
-import httpx
+import httpxp
 
 
-class MyCustomAuth(httpx.Auth):
+class MyCustomAuth(httpxp.Auth):
     def __init__(self):
         self._sync_lock = threading.RLock()
         self._async_lock = asyncio.Lock()
@@ -217,16 +217,16 @@ class MyCustomAuth(httpx.Auth):
 If you only want to support one of the two methods, then you should still override it, but raise an explicit `RuntimeError`.
 
 ```python
-import httpx
+import httpxp
 import sync_only_library
 
 
-class MyCustomAuth(httpx.Auth):
+class MyCustomAuth(httpxp.Auth):
     def sync_auth_flow(self, request):
         token = sync_only_library.get_token(...)
         request.headers["Authorization"] = f"Token {token}"
         yield request
 
     async def async_auth_flow(self, request):
-        raise RuntimeError("Cannot use a sync authentication class with httpx.AsyncClient")
+        raise RuntimeError("Cannot use a sync authentication class with httpxp.AsyncClient")
 ```

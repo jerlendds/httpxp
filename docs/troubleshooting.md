@@ -1,6 +1,6 @@
 # Troubleshooting
 
-This page lists some common problems or issues you could encounter while developing with HTTPX, as well as possible solutions.
+This page lists some common problems or issues you could encounter while developing with HTTPXP, as well as possible solutions.
 
 ## Proxies
 
@@ -11,7 +11,7 @@ This page lists some common problems or issues you could encounter while develop
 **Description**: When using a proxy and making an HTTPS request, you see an exception looking like this:
 
 ```console
-httpx.ProxyError: _ssl.c:1091: The handshake operation timed out
+httpxp.ProxyError: _ssl.c:1091: The handshake operation timed out
 ```
 
 **Similar issues**: [encode/httpx#1412](https://github.com/encode/httpx/issues/1412), [encode/httpx#1433](https://github.com/encode/httpx/issues/1433)
@@ -20,12 +20,12 @@ httpx.ProxyError: _ssl.c:1091: The handshake operation timed out
 
 ```python
 mounts = {
-  "http://": httpx.HTTPTransport(proxy="http://myproxy.org"),
-  "https://": httpx.HTTPTransport(proxy="https://myproxy.org"),
+  "http://": httpxp.HTTPTransport(proxy="http://myproxy.org"),
+  "https://": httpxp.HTTPTransport(proxy="https://myproxy.org"),
 }
 ```
 
-Using this setup, you're telling HTTPX to connect to the proxy using HTTP for HTTP requests, and using HTTPS for HTTPS requests.
+Using this setup, you're telling HTTPXP to connect to the proxy using HTTP for HTTP requests, and using HTTPS for HTTPS requests.
 
 But if you get the error above, it is likely that your proxy doesn't support connecting via HTTPS. Don't worry: that's a [common gotcha](advanced/proxies.md#http-proxies).
 
@@ -33,8 +33,8 @@ Change the scheme of your HTTPS proxy to `http://...` instead of `https://...`:
 
 ```python
 mounts = {
-  "http://": httpx.HTTPTransport(proxy="http://myproxy.org"),
-  "https://": httpx.HTTPTransport(proxy="http://myproxy.org"),
+  "http://": httpxp.HTTPTransport(proxy="http://myproxy.org"),
+  "https://": httpxp.HTTPTransport(proxy="http://myproxy.org"),
 }
 ```
 
@@ -42,7 +42,7 @@ This can be simplified to:
 
 ```python
 proxy = "http://myproxy.org"
-with httpx.Client(proxy=proxy) as client:
+with httpxp.Client(proxy=proxy) as client:
   ...
 ```
 
@@ -55,9 +55,9 @@ For more information, see [Proxies: FORWARD vs TUNNEL](advanced/proxies.md#forwa
 **Description**: your proxy _does_ support connecting via HTTPS, but you are seeing errors along the lines of...
 
 ```console
-httpx.ProxyError: [SSL: PRE_MAC_LENGTH_TOO_LONG] invalid alert (_ssl.c:1091)
+httpxp.ProxyError: [SSL: PRE_MAC_LENGTH_TOO_LONG] invalid alert (_ssl.c:1091)
 ```
 
 **Similar issues**: [encode/httpx#1424](https://github.com/encode/httpx/issues/1424).
 
-**Resolution**: HTTPX does not properly support HTTPS proxies at this time. If that's something you're interested in having, please see [encode/httpx#1434](https://github.com/encode/httpx/issues/1434) and consider lending a hand there.
+**Resolution**: HTTPXP does not properly support HTTPS proxies at this time. If that's something you're interested in having, please see [encode/httpx#1434](https://github.com/encode/httpx/issues/1434) and consider lending a hand there.

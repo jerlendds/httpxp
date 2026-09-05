@@ -1,6 +1,6 @@
-site_name: HTTPX
+site_name: HTTPXP
 site_description: A next-generation HTTP client for Python.
-site_url: https://www.python-httpx.org/
+site_url: https://jerlendds.github.io/httpxp/
 
 theme:
     name: 'material'
@@ -18,8 +18,8 @@ theme:
           icon: 'material/lightbulb-outline'
           name: 'Switch to light mode'
 
-repo_name: encode/httpx
-repo_url: https://github.com/encode/httpx/
+repo_name: encode/httpxp
+repo_url: https://github.com/jerlendds/httpxp/
 edit_uri: ""
 
 nav:
@@ -30,6 +30,9 @@ nav:
         - Authentication: 'advanced/authentication.md'
         - SSL: 'advanced/ssl.md'
         - Proxies: 'advanced/proxies.md'
+        - Privacy configuration: 'advanced/wreq.md'
+        - Privacy option reference: 'advanced/privacy-options.md'
+        - Native API coverage: 'advanced/wreq-coverage.md'
         - Timeouts: 'advanced/timeouts.md'
         - Resource Limits: 'advanced/resource-limits.md'
         - Event Hooks: 'advanced/event-hooks.md'

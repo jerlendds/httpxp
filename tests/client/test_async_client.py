@@ -5,13 +5,13 @@ from datetime import timedelta
 
 import pytest
 
-import httpx
+import httpxp
 
 
 @pytest.mark.anyio
 async def test_get(server):
     url = server.url
-    async with httpx.AsyncClient(http2=True) as client:
+    async with httpxp.AsyncClient(http2=True) as client:
         response = await client.get(url)
     assert response.status_code == 200
     assert response.text == "Hello, world!"
@@ -31,8 +31,8 @@ async def test_get(server):
 )
 @pytest.mark.anyio
 async def test_get_invalid_url(server, url):
-    async with httpx.AsyncClient() as client:
-        with pytest.raises((httpx.UnsupportedProtocol, httpx.LocalProtocolError)):
+    async with httpxp.AsyncClient() as client:
+        with pytest.raises((httpxp.UnsupportedProtocol, httpxp.LocalProtocolError)):
             await client.get(url)
 
 
@@ -40,7 +40,7 @@ async def test_get_invalid_url(server, url):
 async def test_build_request(server):
     url = server.url.copy_with(path="/echo_headers")
     headers = {"Custom-header": "value"}
-    async with httpx.AsyncClient() as client:
+    async with httpxp.AsyncClient() as client:
         request = client.build_request("GET", url)
         request.headers.update(headers)
         response = await client.send(request)
@@ -54,7 +54,7 @@ async def test_build_request(server):
 @pytest.mark.anyio
 async def test_post(server):
     url = server.url
-    async with httpx.AsyncClient() as client:
+    async with httpxp.AsyncClient() as client:
         response = await client.post(url, content=b"Hello, world!")
     assert response.status_code == 200
 
@@ -62,14 +62,14 @@ async def test_post(server):
 @pytest.mark.anyio
 async def test_post_json(server):
     url = server.url
-    async with httpx.AsyncClient() as client:
+    async with httpxp.AsyncClient() as client:
         response = await client.post(url, json={"text": "Hello, world!"})
     assert response.status_code == 200
 
 
 @pytest.mark.anyio
 async def test_stream_response(server):
-    async with httpx.AsyncClient() as client:
+    async with httpxp.AsyncClient() as client:
         async with client.stream("GET", server.url) as response:
             body = await response.aread()
 
@@ -80,12 +80,12 @@ async def test_stream_response(server):
 
 @pytest.mark.anyio
 async def test_access_content_stream_response(server):
-    async with httpx.AsyncClient() as client:
+    async with httpxp.AsyncClient() as client:
         async with client.stream("GET", server.url) as response:
             pass
 
     assert response.status_code == 200
-    with pytest.raises(httpx.ResponseNotRead):
+    with pytest.raises(httpxp.ResponseNotRead):
         response.content  # noqa: B018
 
 
@@ -95,7 +95,7 @@ async def test_stream_request(server):
         yield b"Hello, "
         yield b"world!"
 
-    async with httpx.AsyncClient() as client:
+    async with httpxp.AsyncClient() as client:
         response = await client.post(server.url, content=hello_world())
     assert response.status_code == 200
 
@@ -106,21 +106,21 @@ async def test_cannot_stream_sync_request(server):
         yield b"Hello, "
         yield b"world!"
 
-    async with httpx.AsyncClient() as client:
+    async with httpxp.AsyncClient() as client:
         with pytest.raises(RuntimeError):
             await client.post(server.url, content=hello_world())
 
 
 @pytest.mark.anyio
 async def test_raise_for_status(server):
-    async with httpx.AsyncClient() as client:
+    async with httpxp.AsyncClient() as client:
         for status_code in (200, 400, 404, 500, 505):
             response = await client.request(
                 "GET", server.url.copy_with(path=f"/status/{status_code}")
             )
 
             if 400 <= status_code < 600:
-                with pytest.raises(httpx.HTTPStatusError) as exc_info:
+                with pytest.raises(httpxp.HTTPStatusError) as exc_info:
                     response.raise_for_status()
                 assert exc_info.value.response == response
             else:
@@ -129,7 +129,7 @@ async def test_raise_for_status(server):
 
 @pytest.mark.anyio
 async def test_options(server):
-    async with httpx.AsyncClient() as client:
+    async with httpxp.AsyncClient() as client:
         response = await client.options(server.url)
     assert response.status_code == 200
     assert response.text == "Hello, world!"
@@ -137,7 +137,7 @@ async def test_options(server):
 
 @pytest.mark.anyio
 async def test_head(server):
-    async with httpx.AsyncClient() as client:
+    async with httpxp.AsyncClient() as client:
         response = await client.head(server.url)
     assert response.status_code == 200
     assert response.text == ""
@@ -145,21 +145,21 @@ async def test_head(server):
 
 @pytest.mark.anyio
 async def test_put(server):
-    async with httpx.AsyncClient() as client:
+    async with httpxp.AsyncClient() as client:
         response = await client.put(server.url, content=b"Hello, world!")
     assert response.status_code == 200
 
 
 @pytest.mark.anyio
 async def test_patch(server):
-    async with httpx.AsyncClient() as client:
+    async with httpxp.AsyncClient() as client:
         response = await client.patch(server.url, content=b"Hello, world!")
     assert response.status_code == 200
 
 
 @pytest.mark.anyio
 async def test_delete(server):
-    async with httpx.AsyncClient() as client:
+    async with httpxp.AsyncClient() as client:
         response = await client.delete(server.url)
     assert response.status_code == 200
     assert response.text == "Hello, world!"
@@ -170,7 +170,7 @@ async def test_100_continue(server):
     headers = {"Expect": "100-continue"}
     content = b"Echo request body"
 
-    async with httpx.AsyncClient() as client:
+    async with httpxp.AsyncClient() as client:
         response = await client.post(
             server.url.copy_with(path="/echo_body"), headers=headers, content=content
         )
@@ -181,12 +181,12 @@ async def test_100_continue(server):
 
 @pytest.mark.anyio
 async def test_context_managed_transport():
-    class Transport(httpx.AsyncBaseTransport):
+    class Transport(httpxp.AsyncBaseTransport):
         def __init__(self) -> None:
             self.events: list[str] = []
 
         async def aclose(self):
-            # The base implementation of httpx.AsyncBaseTransport just
+            # The base implementation of httpxp.AsyncBaseTransport just
             # calls into `.aclose`, so simple transport cases can just override
             # this method for any cleanup, where more complex cases
             # might want to additionally override `__aenter__`/`__aexit__`.
@@ -201,7 +201,7 @@ async def test_context_managed_transport():
             self.events.append("transport.__aexit__")
 
     transport = Transport()
-    async with httpx.AsyncClient(transport=transport):
+    async with httpxp.AsyncClient(transport=transport):
         pass
 
     assert transport.events == [
@@ -213,13 +213,13 @@ async def test_context_managed_transport():
 
 @pytest.mark.anyio
 async def test_context_managed_transport_and_mount():
-    class Transport(httpx.AsyncBaseTransport):
+    class Transport(httpxp.AsyncBaseTransport):
         def __init__(self, name: str) -> None:
             self.name: str = name
             self.events: list[str] = []
 
         async def aclose(self):
-            # The base implementation of httpx.AsyncBaseTransport just
+            # The base implementation of httpxp.AsyncBaseTransport just
             # calls into `.aclose`, so simple transport cases can just override
             # this method for any cleanup, where more complex cases
             # might want to additionally override `__aenter__`/`__aexit__`.
@@ -235,7 +235,7 @@ async def test_context_managed_transport_and_mount():
 
     transport = Transport(name="transport")
     mounted = Transport(name="mounted")
-    async with httpx.AsyncClient(
+    async with httpxp.AsyncClient(
         transport=transport, mounts={"http://www.example.org": mounted}
     ):
         pass
@@ -253,12 +253,12 @@ async def test_context_managed_transport_and_mount():
 
 
 def hello_world(request):
-    return httpx.Response(200, text="Hello, world!")
+    return httpxp.Response(200, text="Hello, world!")
 
 
 @pytest.mark.anyio
 async def test_client_closed_state_using_implicit_open():
-    client = httpx.AsyncClient(transport=httpx.MockTransport(hello_world))
+    client = httpxp.AsyncClient(transport=httpxp.MockTransport(hello_world))
 
     assert not client.is_closed
     await client.get("http://example.com")
@@ -279,7 +279,9 @@ async def test_client_closed_state_using_implicit_open():
 
 @pytest.mark.anyio
 async def test_client_closed_state_using_with_block():
-    async with httpx.AsyncClient(transport=httpx.MockTransport(hello_world)) as client:
+    async with httpxp.AsyncClient(
+        transport=httpxp.MockTransport(hello_world)
+    ) as client:
         assert not client.is_closed
         await client.get("http://example.com")
 
@@ -288,22 +290,22 @@ async def test_client_closed_state_using_with_block():
         await client.get("http://example.com")
 
 
-def unmounted(request: httpx.Request) -> httpx.Response:
+def unmounted(request: httpxp.Request) -> httpxp.Response:
     data = {"app": "unmounted"}
-    return httpx.Response(200, json=data)
+    return httpxp.Response(200, json=data)
 
 
-def mounted(request: httpx.Request) -> httpx.Response:
+def mounted(request: httpxp.Request) -> httpxp.Response:
     data = {"app": "mounted"}
-    return httpx.Response(200, json=data)
+    return httpxp.Response(200, json=data)
 
 
 @pytest.mark.anyio
 async def test_mounted_transport():
-    transport = httpx.MockTransport(unmounted)
-    mounts = {"custom://": httpx.MockTransport(mounted)}
+    transport = httpxp.MockTransport(unmounted)
+    mounts = {"custom://": httpxp.MockTransport(mounted)}
 
-    async with httpx.AsyncClient(transport=transport, mounts=mounts) as client:
+    async with httpxp.AsyncClient(transport=transport, mounts=mounts) as client:
         response = await client.get("https://www.example.com")
         assert response.status_code == 200
         assert response.json() == {"app": "unmounted"}
@@ -315,12 +317,12 @@ async def test_mounted_transport():
 
 @pytest.mark.anyio
 async def test_async_mock_transport():
-    async def hello_world(request: httpx.Request) -> httpx.Response:
-        return httpx.Response(200, text="Hello, world!")
+    async def hello_world(request: httpxp.Request) -> httpxp.Response:
+        return httpxp.Response(200, text="Hello, world!")
 
-    transport = httpx.MockTransport(hello_world)
+    transport = httpxp.MockTransport(hello_world)
 
-    async with httpx.AsyncClient(transport=transport) as client:
+    async with httpxp.AsyncClient(transport=transport) as client:
         response = await client.get("https://www.example.com")
         assert response.status_code == 200
         assert response.text == "Hello, world!"
@@ -344,7 +346,7 @@ async def test_cancellation_during_stream():
     stream_was_closed = False
 
     def response_with_cancel_during_stream(request):
-        class CancelledStream(httpx.AsyncByteStream):
+        class CancelledStream(httpxp.AsyncByteStream):
             async def __aiter__(self) -> typing.AsyncIterator[bytes]:
                 yield b"Hello"
                 raise KeyboardInterrupt()
@@ -354,13 +356,13 @@ async def test_cancellation_during_stream():
                 nonlocal stream_was_closed
                 stream_was_closed = True
 
-        return httpx.Response(
+        return httpxp.Response(
             200, headers={"Content-Length": "12"}, stream=CancelledStream()
         )
 
-    transport = httpx.MockTransport(response_with_cancel_during_stream)
+    transport = httpxp.MockTransport(response_with_cancel_during_stream)
 
-    async with httpx.AsyncClient(transport=transport) as client:
+    async with httpxp.AsyncClient(transport=transport) as client:
         with pytest.raises(KeyboardInterrupt):
             await client.get("https://www.example.com")
         assert stream_was_closed
@@ -369,7 +371,7 @@ async def test_cancellation_during_stream():
 @pytest.mark.anyio
 async def test_server_extensions(server):
     url = server.url
-    async with httpx.AsyncClient(http2=True) as client:
+    async with httpxp.AsyncClient(http2=True) as client:
         response = await client.get(url)
     assert response.status_code == 200
     assert response.extensions["http_version"] == b"HTTP/1.1"

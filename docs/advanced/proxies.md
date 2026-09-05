@@ -1,8 +1,8 @@
-HTTPX supports setting up [HTTP proxies](https://en.wikipedia.org/wiki/Proxy_server#Web_proxy_servers) via the `proxy` parameter to be passed on client initialization or top-level API functions like `httpx.get(..., proxy=...)`.
+HTTPXP supports setting up [HTTP proxies](https://en.wikipedia.org/wiki/Proxy_server#Web_proxy_servers) via the `proxy` parameter to be passed on client initialization or top-level API functions like `httpxp.get(..., proxy=...)`.
 
 <div align="center">
     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Open_proxy_h2g2bob.svg/480px-Open_proxy_h2g2bob.svg.png"/>
-    <figcaption><em>Diagram of how a proxy works (source: Wikipedia). The left hand side "Internet" blob may be your HTTPX client requesting <code>example.com</code> through a proxy.</em></figcaption>
+    <figcaption><em>Diagram of how a proxy works (source: Wikipedia). The left hand side "Internet" blob may be your HTTPXP client requesting <code>example.com</code> through a proxy.</em></figcaption>
 </div>
 
 ## HTTP Proxies
@@ -10,7 +10,7 @@ HTTPX supports setting up [HTTP proxies](https://en.wikipedia.org/wiki/Proxy_ser
 To route all traffic (HTTP and HTTPS) to a proxy located at `http://localhost:8030`, pass the proxy URL to the client...
 
 ```python
-with httpx.Client(proxy="http://localhost:8030") as client:
+with httpxp.Client(proxy="http://localhost:8030") as client:
     ...
 ```
 
@@ -18,11 +18,11 @@ For more advanced use cases, pass a mounts `dict`. For example, to route HTTP an
 
 ```python
 proxy_mounts = {
-    "http://": httpx.HTTPTransport(proxy="http://localhost:8030"),
-    "https://": httpx.HTTPTransport(proxy="http://localhost:8031"),
+    "http://": httpxp.HTTPTransport(proxy="http://localhost:8030"),
+    "https://": httpxp.HTTPTransport(proxy="http://localhost:8031"),
 }
 
-with httpx.Client(mounts=proxy_mounts) as client:
+with httpxp.Client(mounts=proxy_mounts) as client:
     ...
 ```
 
@@ -40,7 +40,7 @@ For detailed information about proxy routing, see the [Routing](#routing) sectio
 Proxy credentials can be passed as the `userinfo` section of the proxy URL. For example:
 
 ```python
-with httpx.Client(proxy="http://username:password@localhost:8030") as client:
+with httpxp.Client(proxy="http://username:password@localhost:8030") as client:
     ...
 ```
 
@@ -67,17 +67,12 @@ If you encounter issues when setting up proxies, please refer to our [Troublesho
 
 ## SOCKS
 
-In addition to HTTP proxies, `httpcore` also supports proxies using the SOCKS protocol.
-This is an optional feature that requires an additional third-party library be installed before use.
-
-You can install SOCKS support using `pip`:
-
-```shell
-$ pip install httpx[socks]
-```
-
-You can now configure a client to make requests via a proxy using the SOCKS protocol:
+In addition to HTTP proxies, the native transport also supports proxies using the SOCKS protocol.
+SOCKS support is included in the native transport; no Python SOCKS extra is required.
 
 ```python
-httpx.Client(proxy='socks5://user:pass@host:port')
+httpxp.Client(proxy='socks5://user:pass@host:port')
 ```
+
+See [privacy configuration](wreq.md#proxies-and-local-addresses) for request-level
+proxies, exclusions, custom proxy headers, scheme rules, and Unix sockets.
