@@ -175,4 +175,6 @@ Run the supplied examples from the source checkout after installation with
 `python -m examples.private_proxy --help` or
 `python -m examples.private_websocket --help`.
 
+---
+
 <p align="center"><i>HTTPXP is <a href="https://github.com/jerlendds/httpxp/blob/master/LICENSE.md">BSD licensed</a> code.<br/>Designed & crafted with care.</i><br/>&mdash; ♥ &mdash;</p>
